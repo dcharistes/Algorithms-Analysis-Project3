@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "graph_tools.h"
+#include <limits.h>
+#include "./graph_funcs/prim_graph_funcs.h"
 
 
 Graph* primsMST(Graph* g, int start);
@@ -39,7 +40,7 @@ Graph* primsMST(Graph* g, int start) {
     visited[start] = 1;
 
     while (Bsize < n) {
-        int min = 9999;
+        int min = INT_MAX;
         int v = -1, par = -1;
 
         for (int i = 0; i < Bsize; i++) {
