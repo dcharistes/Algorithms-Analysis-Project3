@@ -1,257 +1,174 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include <stdbool.h>
 
-/* -------------------- ΔΟΜΕΣ ΓΡΑΦΟΥ -------------------- */
+/* ——— Γράφος με λίστες γειτνίασης ——— */
 typedef struct Node {
-    int dest;
-    int cost;
-    struct Node* next;
+    int v, w;
+    struct Node *next;
 } Node;
 
 typedef struct {
     int n;
-    Node** adjList;
+    Node **adj;
 } Graph;
 
-// Δημιουργεί κόμβο λίστας γειτνίασης
-Node* createNode(int dest, int cost) {
-    Node* newNode = malloc(sizeof(Node));
-    newNode->dest = dest;
-    newNode->cost = cost;
-    newNode->next = NULL;
-    return newNode;
-}
-
-// Δημιουργεί γράφο με n κορυφές, λίστες γειτνίασης κενές
-Graph* createGraph(int n) {
-    Graph* g = malloc(sizeof(Graph));
+Graph *newGraph(int n){
+    Graph *g = malloc(sizeof *g);
     g->n = n;
-    g->adjList = malloc(n * sizeof(Node*));
-    for (int i = 0; i < n; i++)
-        g->adjList[i] = NULL;
+    g->adj = calloc(n, sizeof *g->adj);
     return g;
 }
 
-// Προσθήκη κατευθυνόμενης ακμής src→dest
-void addEdge(Graph* g, int src, int dest, int cost) {
-    Node* node = createNode(dest, cost);
-    node->next = g->adjList[src];
-    g->adjList[src] = node;
+Node *newNode(int v, int w){
+    Node *x = malloc(sizeof *x);
+    x->v = v; x->w = w; x->next = NULL;
+    return x;
 }
 
-// Προσθήκη αμφοτερόδρομης ακμής (undirected)
-void addUndirectedEdge(Graph* g, int u, int v, int cost) {
-    addEdge(g, u, v, cost);
-    addEdge(g, v, u, cost);
+void addEdge(Graph *g, int u, int v, int w){
+    Node *x = newNode(v,w);
+    x->next = g->adj[u];
+    g->adj[u] = x;
 }
 
-// Εκτυπώνει τις ακμές ενός MST-γραφου και αθροίζει κόστος
-void displayEdges(Graph* tree, int* totalCost) {
-    *totalCost = 0;
-    for (int u = 0; u < tree->n; u++) {
-        for (Node* cur = tree->adjList[u]; cur; cur = cur->next) {
-            if (u < cur->dest) {
-                printf("(%d)---(%d|%d)\n", u, cur->dest, cur->cost);
-                *totalCost += cur->cost;
-            }
-        }
+/* ——— Min-heap για Prim ——— */
+typedef struct { int v, key; } HNode;
+typedef struct {
+    int size, cap, *pos;
+    HNode **h;
+} Heap;
+
+Heap *newHeap(int cap){
+    Heap *H = malloc(sizeof *H);
+    H->size = 0;
+    H->cap = cap;
+    H->pos = malloc(cap * sizeof *H->pos);
+    H->h   = malloc(cap * sizeof *H->h);
+    return H;
+}
+
+static inline int LEFT(int i){ return 2*i+1; }
+static inline int RIGHT(int i){ return 2*i+2; }
+
+void swapNode(HNode **a, HNode **b, int *pos){
+    int va = (*a)->v, vb = (*b)->v;
+    HNode *t = *a; *a = *b; *b = t;
+    int tmp = pos[va]; pos[va] = pos[vb]; pos[vb] = tmp;
+}
+
+void heapify(Heap *H, int i){
+    int l = LEFT(i), r = RIGHT(i), small = i;
+    if (l < H->size && H->h[l]->key < H->h[small]->key) small = l;
+    if (r < H->size && H->h[r]->key < H->h[small]->key) small = r;
+    if (small != i){
+        swapNode(&H->h[i], &H->h[small], H->pos);
+        heapify(H, small);
     }
 }
 
-/* -------------------- MIN-HEAP ΔΟΜΕΣ -------------------- */
-typedef struct {
-    int v;     // κορυφή
-    int key;   // τρέχον ελάχιστο βάρος ακμής
-} HeapNode;
-
-typedef struct {
-    int size;       // τρέχων αριθμός κόμβων στο heap
-    int capacity;   // μέγιστη χωρητικότητα (ιδανικά = V)
-    int *pos;       // pos[v] = θέση της κορυφής v μέσα στο heap array
-    HeapNode **arr; // δυναμικός πίνακας δεικτών σε HeapNode
-} MinHeap;
-
-// Ανταλλαγή δύο κόμβων στο heap και ενημέρωση pos[]
-void swapHeapNode(HeapNode **a, HeapNode **b, int *pos) {
-    HeapNode *tmp = *a;
-    int pv = (*a)->v, qv = (*b)->v;
-    *a = *b;  *b = tmp;
-    pos[pv] = pos[qv];
-    pos[qv] = pos[pv] == pos[qv] ? pos[pv] : pos[qv]; // μετά swap
-}
-
-// Δημιουργία min-heap για V κόμβους
-MinHeap* createMinHeap(int capacity) {
-    MinHeap* mh = malloc(sizeof(MinHeap));
-    mh->size = 0;
-    mh->capacity = capacity;
-    mh->pos = malloc(capacity * sizeof(int));
-    mh->arr = malloc(capacity * sizeof(HeapNode*));
-    return mh;
-}
-
-bool isEmpty(MinHeap* mh) {
-    return mh->size == 0;
-}
-
-// Φυτρώνει προς τα κάτω (heapify) από index i
-void minHeapify(MinHeap* mh, int i) {
-    int smallest = i;
-    int l = 2*i + 1, r = 2*i + 2;
-    if (l < mh->size && mh->arr[l]->key < mh->arr[smallest]->key)
-        smallest = l;
-    if (r < mh->size && mh->arr[r]->key < mh->arr[smallest]->key)
-        smallest = r;
-    if (smallest != i) {
-        swapHeapNode(&mh->arr[i], &mh->arr[smallest], mh->pos);
-        minHeapify(mh, smallest);
-    }
-}
-
-// Εξάγει (και αφαιρεί) τον κόμβο με το ελάχιστο key
-HeapNode* extractMin(MinHeap* mh) {
-    if (isEmpty(mh)) return NULL;
-    HeapNode* root = mh->arr[0];
-    HeapNode* last = mh->arr[mh->size - 1];
-    mh->arr[0] = last;
-    mh->pos[last->v] = 0;
-    mh->size--;
-    minHeapify(mh, 0);
+HNode *extractMin(Heap *H){
+    if (H->size == 0) return NULL;
+    HNode *root = H->h[0];
+    HNode *last = H->h[--H->size];
+    H->h[0] = last;
+    H->pos[last->v] = 0;
+    heapify(H, 0);
     return root;
 }
 
-// Μειώνει το key της κορυφής v σε new_key (decrease-key)
-void decreaseKey(MinHeap* mh, int v, int new_key) {
-    int i = mh->pos[v];
-    mh->arr[i]->key = new_key;
-    while (i && mh->arr[i]->key < mh->arr[(i-1)/2]->key) {
-        swapHeapNode(&mh->arr[i], &mh->arr[(i-1)/2], mh->pos);
+void decreaseKey(Heap *H, int v, int newKey){
+    int i = H->pos[v];
+    H->h[i]->key = newKey;
+    while (i > 0 && H->h[i]->key < H->h[(i-1)/2]->key) {
+        swapNode(&H->h[i], &H->h[(i-1)/2], H->pos);
         i = (i-1)/2;
     }
 }
 
-// Εισάγει νέο HeapNode στη δομή
-void insertHeapNode(MinHeap* mh, HeapNode* hn) {
-    mh->arr[mh->size] = hn;
-    mh->pos[hn->v] = mh->size;
-    mh->size++;
-    // φυτρώνει προς τα πάνω
-    int i = mh->size - 1;
-    while (i && mh->arr[i]->key < mh->arr[(i-1)/2]->key) {
-        swapHeapNode(&mh->arr[i], &mh->arr[(i-1)/2], mh->pos);
-        i = (i-1)/2;
-    }
+int inHeap(Heap *H, int v){
+    return H->pos[v] < H->size;
 }
 
-bool isInMinHeap(MinHeap *mh, int v) {
-    return mh->pos[v] < mh->size;
-}
-
-/* -------------------- PRIM’s MST -------------------- */
-Graph* primsMST(Graph* g, int start) {
+/* ——— Prim’s MST ——— */
+Graph *prim(Graph *g, int src){
     int V = g->n;
-    int *parent = malloc(V * sizeof(int));
-    int *key    = malloc(V * sizeof(int));
-    bool *inMST = malloc(V * sizeof(bool));
+    int *key = malloc(V * sizeof *key);
+    int *par = malloc(V * sizeof *par);
 
-    // 1) Αρχικοποίηση
-    MinHeap* mh = createMinHeap(V);
-    for (int v = 0; v < V; v++) {
-        parent[v] = -1;
-        key[v]    = INT_MAX;
-        inMST[v]  = false;
-        HeapNode* hn = malloc(sizeof(HeapNode));
-        hn->v   = v;
-        hn->key = key[v];
-        insertHeapNode(mh, hn);
+    Heap *H = newHeap(V);
+    for (int i = 0; i < V; i++){
+        par[i] = -1;
+        key[i] = INT_MAX;
+        H->h[i] = malloc(sizeof *H->h[i]);
+        H->h[i]->v = i;
+        H->h[i]->key = key[i];
+        H->pos[i] = i;
+        H->size++;
     }
 
-    // 2) Ο σπόρος
-    decreaseKey(mh, start, 0);
-    key[start] = 0;
+    decreaseKey(H, src, 0);
+    key[src] = 0;
 
-    // 3) Κύριος βρόχος
-    while (!isEmpty(mh)) {
-        HeapNode* hn = extractMin(mh);
+    while (H->size){
+        HNode *hn = extractMin(H);
         int u = hn->v;
-        inMST[u] = true;
         free(hn);
-
-        // Εξετάζουμε κάθε γειτονικό v
-        for (Node* nbr = g->adjList[u]; nbr; nbr = nbr->next) {
-            int v = nbr->dest;
-            if (isInMinHeap(mh, v) && nbr->cost < key[v]) {
-                key[v]    = nbr->cost;
-                parent[v] = u;
-                decreaseKey(mh, v, nbr->cost);
+        for (Node *p = g->adj[u]; p; p = p->next){
+            int v = p->v;
+            if (inHeap(H, v) && p->w < key[v]){
+                key[v] = p->w;
+                par[v] = u;
+                decreaseKey(H, v, p->w);
             }
         }
     }
 
-    // 4) Συναρμολόγηση MST-γράφου
-    Graph* tree = createGraph(V);
-    for (int v = 0; v < V; v++) {
-        if (parent[v] != -1) {
-            addUndirectedEdge(tree, parent[v], v, key[v]);
+    /* Έλεγχος συνεκτικότητας: αν κάποια κορυφή πέρασε αλώβητη, τερματίζουμε */
+    for (int i = 0; i < V; i++){
+        if (i != src && par[i] < 0){
+            fprintf(stderr, "Graph not connected\n");
+            exit(1);
         }
     }
 
-    // 5) Έλεγχος συνεκτικότητας
-    for (int v = 0; v < V; v++) {
-        if (v != start && parent[v] == -1) {
-            fprintf(stderr, "Ο γράφος ΔΕΝ είναι συνεκτικός – δεν υπάρχει MST για όλες τις κορυφές.\n");
-            exit(EXIT_FAILURE);
+    /* Φτιάχνουμε το MST-γράφο */
+    Graph *T = newGraph(V);
+    for (int v = 0; v < V; v++){
+        if (par[v] >= 0){
+            addEdge(T, par[v], v, key[v]);
+            addEdge(T, v, par[v], key[v]);
         }
     }
 
-    // 6) Καθαρισμός μνήμης βοηθητικών δομών
-    for (int i = 0; i < mh->capacity; i++)
-        if (mh->pos[i] < mh->capacity) ; // δεν χρειαζόμαστε τα υπόλοιπα HeapNode
-    free(mh->arr);
-    free(mh->pos);
-    free(mh);
-    free(parent);
-    free(key);
-    free(inMST);
-
-    return tree;
+    return T;
 }
 
-// Απελευθέρωση γράφου
-void freeGraph(Graph* g) {
-    for (int i = 0; i < g->n; i++) {
-        Node* cur = g->adjList[i];
-        while (cur) {
-            Node* tmp = cur;
-            cur = cur->next;
-            free(tmp);
+/* ——— Εμφάνιση αποτελέσματος ——— */
+void showMST(Graph *T){
+    int cost = 0;
+    for (int u = 0; u < T->n; u++){
+        for (Node *p = T->adj[u]; p; p = p->next){
+            if (u < p->v){
+                printf("%d - %d (%d)\n", u, p->v, p->w);
+                cost += p->w;
+            }
         }
     }
-    free(g->adjList);
-    free(g);
+    printf("Total cost = %d\n", cost);
 }
 
-/* -------------------- MAIN & TEST -------------------- */
-int main() {
-    Graph* g = createGraph(4);
+int main(void){
+    Graph *g = newGraph(4);
 
-    // Παραδειγματικός γράφος 4 κορυφών
-    addUndirectedEdge(g, 0, 1, 10);
-    addUndirectedEdge(g, 0, 2, 6);
-    addUndirectedEdge(g, 0, 3, 5);
-    addUndirectedEdge(g, 1, 3, 15);
-    addUndirectedEdge(g, 2, 3, 4);
+    addEdge(g, 0, 1, 10); addEdge(g, 1, 0, 10);
+    addEdge(g, 0, 2, 6);  addEdge(g, 2, 0, 6);
+    addEdge(g, 0, 3, 5);  addEdge(g, 3, 0, 5);
+    addEdge(g, 1, 3, 15); addEdge(g, 3, 1, 15);
+    addEdge(g, 2, 3, 4);  addEdge(g, 3, 2, 4);
 
-    Graph* mst = primsMST(g, 0);
+    Graph *mst = prim(g, 0);
+    showMST(mst);
 
-    printf("Minimum Spanning Tree Edges:\n");
-    int totalCost;
-    displayEdges(mst, &totalCost);
-    printf("Total cost: %d\n", totalCost);
-
-    freeGraph(g);
-    freeGraph(mst);
     return 0;
 }
