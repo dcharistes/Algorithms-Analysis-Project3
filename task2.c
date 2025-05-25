@@ -5,8 +5,7 @@
 #define MAX_NODES 100
 
 typedef struct Node {
-    int dest;
-    int weight;
+    int dest, weight;
     struct Node* next;
 } Node;
 
@@ -86,11 +85,17 @@ int find(int* parent, int v) {
     return find(parent, parent[v]);
 }
 
+int compEdges(const void* a, const void* b) {
+    Edge* e1 = (Edge*)a;
+    Edge* e2 = (Edge*)b;
+    return (e1->weight < e2->weight) ? -1 : (e1->weight > e2->weight) ? 1 : 0;
+}
 
 int unionSet(int* parent, int u, int v) {
     int rootU = find(parent, u);
     int rootV = find(parent, v);
-    if (rootU == rootV) return 0;
+    if (rootU == rootV)
+        return 0;
     parent[rootV] = rootU;
     return 1;
 }
@@ -100,7 +105,8 @@ Graph* kruskalMST(Graph* g) {
     int edgeCount;
 
     extractEdges(g, edges, &edgeCount);
-    sortEdges(edges, edgeCount);
+    qsort(edges, edgeCount, sizeof(Edge), compEdges);
+    //sortEdges(edges, edgeCount);
 
     Graph* mst = (Graph*)malloc(sizeof(Graph));
     initGraph(mst, g->V);
@@ -139,36 +145,79 @@ void displayGraph(Graph* g) {
 }
 
 int main() {
-    Graph* g = (Graph*)malloc(sizeof(Graph));
-    initGraph(g, 7); // vertices numbered 0 to 6
+    int N = 4;
+    Graph* graphs[N];
+    Graph* msts[N];
 
+    graphs[0] = (Graph*)malloc(sizeof(Graph));
+    initGraph(graphs[0], 5); // vertices numbered 0 to 4
     // Undirected graph
-    addEdge(g, 1, 2, 6); addEdge(g, 2, 1, 6);
-    addEdge(g, 1, 3, 1); addEdge(g, 3, 1, 1);
-    addEdge(g, 1, 4, 3); addEdge(g, 4, 1, 3);
-    addEdge(g, 1, 5, 2); addEdge(g, 5, 1, 2);
-    addEdge(g, 1, 6, 1); addEdge(g, 6, 1, 1);
+    addEdge(graphs[0],0,1,2);  addEdge(graphs[0],1,0,2);
+    addEdge(graphs[0],0,3,6);  addEdge(graphs[0],3,0,6);
+    addEdge(graphs[0],1,2,3);  addEdge(graphs[0],2,1,3);
+    addEdge(graphs[0],1,3,8);  addEdge(graphs[0],3,1,8);
+    addEdge(graphs[0],1,4,5);  addEdge(graphs[0],4,1,5);
+    addEdge(graphs[0],2,4,7);  addEdge(graphs[0],4,2,7);
+    addEdge(graphs[0],3,4,9);  addEdge(graphs[0],4,3,9);
 
-    addEdge(g, 2, 6, 3); addEdge(g, 6, 2, 3);
-    addEdge(g, 2, 3, 4); addEdge(g, 3, 2, 4);
-    addEdge(g, 2, 5, 5); addEdge(g, 5, 2, 5);
-    addEdge(g, 2, 4, 7); addEdge(g, 4, 2, 7);
+    graphs[1] = (Graph*)malloc(sizeof(Graph));
+    initGraph(graphs[1], 5); // vertices numbered 0 to 4
+    // Undirected graph
+    addEdge(graphs[1], 0, 1, 2);  addEdge(graphs[1], 1, 0, 2);
+    addEdge(graphs[1], 1, 2, 3);  addEdge(graphs[1], 2, 1, 3);
+    addEdge(graphs[1], 2, 3, 4);  addEdge(graphs[1], 3, 2, 4);
+    addEdge(graphs[1], 3, 4, 5);  addEdge(graphs[1], 4, 3, 5);
+    addEdge(graphs[1], 4, 0, 1);  addEdge(graphs[1], 0, 4, 1);
 
-    addEdge(g, 3, 4, 1); addEdge(g, 4, 3, 1);
-    addEdge(g, 3, 5, 2); addEdge(g, 5, 3, 2);
+    graphs[2] = (Graph*)malloc(sizeof(Graph));
+    initGraph(graphs[2], 5); // vertices numbered 0 to 4
+    // Undirected graph
+    addEdge(graphs[2],0,1,7);  addEdge(graphs[2],1,0,7);
+    addEdge(graphs[2],0,2,9);  addEdge(graphs[2],2,0,9);
+    addEdge(graphs[2],1,3,10); addEdge(graphs[2],3,1,10);
+    addEdge(graphs[2],2,3,2);  addEdge(graphs[2],3,2,2);
+    addEdge(graphs[2],3,4,1);  addEdge(graphs[2],4,3,1);
 
-    addEdge(g, 4, 5, 4); addEdge(g, 5, 4, 4);
-    addEdge(g, 4, 6, 2); addEdge(g, 6, 4, 2);
+    graphs[3] = (Graph*)malloc(sizeof(Graph));
+    initGraph(graphs[3], 5); // vertices numbered 0 to 4
+    // Undirected graph
+    addEdge(graphs[3], 0, 1, 1);  addEdge(graphs[3], 1, 0, 1);
+    addEdge(graphs[3], 1, 2, 1);  addEdge(graphs[3], 2, 1, 1);
+    addEdge(graphs[3], 2, 3, 1);  addEdge(graphs[3], 3, 2, 1);
+    addEdge(graphs[3], 3, 4, 1);  addEdge(graphs[3], 4, 3, 1);
 
-    addEdge(g, 5, 6, 5); addEdge(g, 6, 5, 5);
+    for (int i = 0; i < 4; i++) {
+        printf("\n==Original Graph %d Edges ==\n", i + 1);
+        displayGraph(graphs[i]);
 
-    printf("Original Graph Edges:\n");
-    displayGraph(g);
+        msts[i] = kruskalMST(graphs[i]);
 
-    Graph* mst = kruskalMST(g);
+        printf("Minimum Spanning Tree %d Edges:\n", i + 1);
+        displayGraph(msts[i]);
+        printf("\n");
+    }
 
-    printf("\nMinimum Spanning Tree Edges:\n");
-    displayGraph(mst);
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < msts[i]->V; j++) {
+            Node* curr = msts[i]->adjList[j];
+            while (curr) {
+                Node* temp = curr;
+                curr = curr->next;
+                free(temp);
+            }
+        }
+        free(msts[i]);
+
+        for (int j = 0; j < graphs[i]->V; j++) {
+            Node* curr = graphs[i]->adjList[j];
+            while (curr) {
+                Node* temp = curr;
+                curr = curr->next;
+                free(temp);
+            }
+        }
+        free(graphs[i]);
+    }
 
     return 0;
 }
