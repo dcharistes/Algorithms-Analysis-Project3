@@ -1,174 +1,129 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <limits.h>
 
-/* ——— Γράφος με λίστες γειτνίασης ——— */
-typedef struct Node {
-    int v, w;
-    struct Node *next;
-} Node;
+#define V 5   // στατικό μέγεθος γράφου
+
+/* ——— Δομή λίστας γειτνίασης (Εργ.4) ——— */
+typedef struct AdjListNode {
+    int dest, weight;
+    struct AdjListNode *next;
+} AdjListNode;
 
 typedef struct {
-    int n;
-    Node **adj;
+    AdjListNode *head;
+} AdjList;
+
+typedef struct {
+    AdjList *array;   // πίνακας λιστών, μήκους V
 } Graph;
 
-Graph *newGraph(int n){
-    Graph *g = malloc(sizeof *g);
-    g->n = n;
-    g->adj = calloc(n, sizeof *g->adj);
+AdjListNode* newAdjListNode(int dest, int weight) {
+    AdjListNode* node = malloc(sizeof *node);
+    node->dest   = dest;
+    node->weight = weight;
+    node->next   = NULL;
+    return node;
+}
+
+// πια δεν δέχεται παράμετρο V, γιατί το V είναι στατικό
+Graph* createGraph() {
+    Graph* g = malloc(sizeof *g);
+    g->array = calloc(V, sizeof *g->array);
     return g;
 }
 
-Node *newNode(int v, int w){
-    Node *x = malloc(sizeof *x);
-    x->v = v; x->w = w; x->next = NULL;
-    return x;
+void addEdge(Graph* g, int u, int v, int w) {
+    AdjListNode* n = newAdjListNode(v, w);
+    n->next = g->array[u].head;
+    g->array[u].head = n;
 }
 
-void addEdge(Graph *g, int u, int v, int w){
-    Node *x = newNode(v,w);
-    x->next = g->adj[u];
-    g->adj[u] = x;
-}
-
-/* ——— Min-heap για Prim ——— */
-typedef struct { int v, key; } HNode;
-typedef struct {
-    int size, cap, *pos;
-    HNode **h;
-} Heap;
-
-Heap *newHeap(int cap){
-    Heap *H = malloc(sizeof *H);
-    H->size = 0;
-    H->cap = cap;
-    H->pos = malloc(cap * sizeof *H->pos);
-    H->h   = malloc(cap * sizeof *H->h);
-    return H;
-}
-
-static inline int LEFT(int i){ return 2*i+1; }
-static inline int RIGHT(int i){ return 2*i+2; }
-
-void swapNode(HNode **a, HNode **b, int *pos){
-    int va = (*a)->v, vb = (*b)->v;
-    HNode *t = *a; *a = *b; *b = t;
-    int tmp = pos[va]; pos[va] = pos[vb]; pos[vb] = tmp;
-}
-
-void heapify(Heap *H, int i){
-    int l = LEFT(i), r = RIGHT(i), small = i;
-    if (l < H->size && H->h[l]->key < H->h[small]->key) small = l;
-    if (r < H->size && H->h[r]->key < H->h[small]->key) small = r;
-    if (small != i){
-        swapNode(&H->h[i], &H->h[small], H->pos);
-        heapify(H, small);
+/* ——— εύρεση κορυφής με ελάχιστο cost ——— */
+int minCost(int cost[], bool known[]) {
+    int min = INT_MAX, idx = -1;
+    for (int i = 0; i < V; i++) {
+        if (!known[i] && cost[i] < min) {
+            min = cost[i];
+            idx = i;
+        }
     }
-}
-
-HNode *extractMin(Heap *H){
-    if (H->size == 0) return NULL;
-    HNode *root = H->h[0];
-    HNode *last = H->h[--H->size];
-    H->h[0] = last;
-    H->pos[last->v] = 0;
-    heapify(H, 0);
-    return root;
-}
-
-void decreaseKey(Heap *H, int v, int newKey){
-    int i = H->pos[v];
-    H->h[i]->key = newKey;
-    while (i > 0 && H->h[i]->key < H->h[(i-1)/2]->key) {
-        swapNode(&H->h[i], &H->h[(i-1)/2], H->pos);
-        i = (i-1)/2;
-    }
-}
-
-int inHeap(Heap *H, int v){
-    return H->pos[v] < H->size;
+    return idx;
 }
 
 /* ——— Prim’s MST ——— */
-Graph *prim(Graph *g, int src){
-    int V = g->n;
-    int *key = malloc(V * sizeof *key);
-    int *par = malloc(V * sizeof *par);
+void primMST(Graph* g) {
+    int path[V];
+    int cost[V];
+    bool known[V];
 
-    Heap *H = newHeap(V);
-    for (int i = 0; i < V; i++){
-        par[i] = -1;
-        key[i] = INT_MAX;
-        H->h[i] = malloc(sizeof *H->h[i]);
-        H->h[i]->v = i;
-        H->h[i]->key = key[i];
-        H->pos[i] = i;
-        H->size++;
+    for (int i = 0; i < V; i++) {
+        cost[i]  = INT_MAX;
+        known[i] = false;
+        path[i]  = -1;
     }
+    cost[0] = 0;
 
-    decreaseKey(H, src, 0);
-    key[src] = 0;
-
-    while (H->size){
-        HNode *hn = extractMin(H);
-        int u = hn->v;
-        free(hn);
-        for (Node *p = g->adj[u]; p; p = p->next){
-            int v = p->v;
-            if (inHeap(H, v) && p->w < key[v]){
-                key[v] = p->w;
-                par[v] = u;
-                decreaseKey(H, v, p->w);
+    for (int k = 0; k < V-1; k++) {
+        int u = minCost(cost, known);
+        known[u] = true;
+        for (AdjListNode* p = g->array[u].head; p; p = p->next) {
+            int v = p->dest, w = p->weight;
+            if (!known[v] && w < cost[v]) {
+                cost[v]  = w;
+                path[v]  = u;
             }
         }
     }
 
-    /* Έλεγχος συνεκτικότητας: αν κάποια κορυφή πέρασε αλώβητη, τερματίζουμε */
-    for (int i = 0; i < V; i++){
-        if (i != src && par[i] < 0){
-            fprintf(stderr, "Graph not connected\n");
-            exit(1);
-        }
+    printf("\nPrim MST\n");
+    for (int i = 1; i < V; i++) {
+        printf("%d -> %d    %d\n", path[i], i, cost[i]);
     }
-
-    /* Φτιάχνουμε το MST-γράφο */
-    Graph *T = newGraph(V);
-    for (int v = 0; v < V; v++){
-        if (par[v] >= 0){
-            addEdge(T, par[v], v, key[v]);
-            addEdge(T, v, par[v], key[v]);
-        }
-    }
-
-    return T;
 }
 
-/* ——— Εμφάνιση αποτελέσματος ——— */
-void showMST(Graph *T){
-    int cost = 0;
-    for (int u = 0; u < T->n; u++){
-        for (Node *p = T->adj[u]; p; p = p->next){
-            if (u < p->v){
-                printf("%d - %d (%d)\n", u, p->v, p->w);
-                cost += p->w;
-            }
-        }
-    }
-    printf("Total cost = %d\n", cost);
-}
+int main(void) {
+    /* ——— Graph 1: ίδιος με Εργ.5 (V=5) ——— */
+    Graph* g1 = createGraph();
+    addEdge(g1,0,1,2);  addEdge(g1,1,0,2);
+    addEdge(g1,0,3,6);  addEdge(g1,3,0,6);
+    addEdge(g1,1,2,3);  addEdge(g1,2,1,3);
+    addEdge(g1,1,3,8);  addEdge(g1,3,1,8);
+    addEdge(g1,1,4,5);  addEdge(g1,4,1,5);
+    addEdge(g1,2,4,7);  addEdge(g1,4,2,7);
+    addEdge(g1,3,4,9);  addEdge(g1,4,3,9);
+    printf("=== Graph 1 ===");
+    primMST(g1);
 
-int main(void){
-    Graph *g = newGraph(4);
+    /* ——— Graph 2: 5-κορυφών κύκλος ——— */
+    Graph* g2 = createGraph();
+    addEdge(g2, 0, 1, 2);  addEdge(g2, 1, 0, 2);
+    addEdge(g2, 1, 2, 3);  addEdge(g2, 2, 1, 3);
+    addEdge(g2, 2, 3, 4);  addEdge(g2, 3, 2, 4);
+    addEdge(g2, 3, 4, 5);  addEdge(g2, 4, 3, 5);
+    addEdge(g2, 4, 0, 1);  addEdge(g2, 0, 4, 1);
+    printf("\n=== Graph 2 ===");
+    primMST(g2);
 
-    addEdge(g, 0, 1, 10); addEdge(g, 1, 0, 10);
-    addEdge(g, 0, 2, 6);  addEdge(g, 2, 0, 6);
-    addEdge(g, 0, 3, 5);  addEdge(g, 3, 0, 5);
-    addEdge(g, 1, 3, 15); addEdge(g, 3, 1, 15);
-    addEdge(g, 2, 3, 4);  addEdge(g, 3, 2, 4);
-
-    Graph *mst = prim(g, 0);
-    showMST(mst);
+    /* ——— Graph 3: custom 5-κορυφών ——— */
+    Graph* g3 = createGraph();
+    addEdge(g3,0,1,7);  addEdge(g3,1,0,7);
+    addEdge(g3,0,2,9);  addEdge(g3,2,0,9);
+    addEdge(g3,1,3,10); addEdge(g3,3,1,10);
+    addEdge(g3,2,3,2);  addEdge(g3,3,2,2);
+    addEdge(g3,3,4,1);  addEdge(g3,4,3,1);
+    printf("\n=== Graph 3 ===");
+    primMST(g3);
+    
+    /* ——— Graph 4: αλυσίδα (path graph V=5) ——— */
+    Graph* g4 = createGraph();
+    addEdge(g4, 0, 1, 1);  addEdge(g4, 1, 0, 1);
+    addEdge(g4, 1, 2, 1);  addEdge(g4, 2, 1, 1);
+    addEdge(g4, 2, 3, 1);  addEdge(g4, 3, 2, 1);
+    addEdge(g4, 3, 4, 1);  addEdge(g4, 4, 3, 1);
+    printf("\n=== Graph 4 ===");
+    primMST(g4);
 
     return 0;
 }
