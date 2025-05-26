@@ -29,8 +29,8 @@ void initDisjointSet(DisjointSet* ds, int n) {
     ds->parent = (int*)malloc(n * sizeof(int));
     ds->rank = (int*)malloc(n * sizeof(int));
     for (int i = 0; i < n; i++) {
-        ds->parent[i] = i;              //initialize every V vertex to parent of itself (root),
-        ds->rank[i] = 0;                //and the rank to 0 before applying a join with another vertex.
+        ds->parent[i] = i;                              //initialize every V vertex to parent of itself (root),
+        ds->rank[i] = 0;                                //and the rank to 0 before applying a join with another vertex.
     }
 }
 
@@ -133,81 +133,3 @@ void displayGraph(Graph* g) {
         }
     }
 }
-
-// int main() {
-//     int V = 4;
-//     Graph* graphs[V];
-//     Graph* msts[V];
-
-//     graphs[0] = (Graph*)malloc(sizeof(Graph));
-//     initGraph(graphs[0], 5); // vertices numbered 0 to 4
-//     // Undirected graph
-//     addEdge(graphs[0],0,1,2);  addEdge(graphs[0],1,0,2);
-//     addEdge(graphs[0],0,3,6);  addEdge(graphs[0],3,0,6);
-//     addEdge(graphs[0],1,2,3);  addEdge(graphs[0],2,1,3);
-//     addEdge(graphs[0],1,3,8);  addEdge(graphs[0],3,1,8);
-//     addEdge(graphs[0],1,4,5);  addEdge(graphs[0],4,1,5);
-//     addEdge(graphs[0],2,4,7);  addEdge(graphs[0],4,2,7);
-//     addEdge(graphs[0],3,4,9);  addEdge(graphs[0],4,3,9);
-
-//     graphs[1] = (Graph*)malloc(sizeof(Graph));
-//     initGraph(graphs[1], 5); // vertices numbered 0 to 4
-//     // Undirected graph
-//     addEdge(graphs[1], 0, 1, 2);  addEdge(graphs[1], 1, 0, 2);
-//     addEdge(graphs[1], 1, 2, 3);  addEdge(graphs[1], 2, 1, 3);
-//     addEdge(graphs[1], 2, 3, 4);  addEdge(graphs[1], 3, 2, 4);
-//     addEdge(graphs[1], 3, 4, 5);  addEdge(graphs[1], 4, 3, 5);
-//     addEdge(graphs[1], 4, 0, 1);  addEdge(graphs[1], 0, 4, 1);
-
-//     graphs[2] = (Graph*)malloc(sizeof(Graph));
-//     initGraph(graphs[2], 5); // vertices numbered 0 to 4
-//     // Undirected graph
-//     addEdge(graphs[2],0,1,7);  addEdge(graphs[2],1,0,7);
-//     addEdge(graphs[2],0,2,9);  addEdge(graphs[2],2,0,9);
-//     addEdge(graphs[2],1,3,10); addEdge(graphs[2],3,1,10);
-//     addEdge(graphs[2],2,3,2);  addEdge(graphs[2],3,2,2);
-//     addEdge(graphs[2],3,4,1);  addEdge(graphs[2],4,3,1);
-
-//     graphs[3] = (Graph*)malloc(sizeof(Graph));
-//     initGraph(graphs[3], 5); // vertices numbered 0 to 4
-//     // Undirected graph
-//     addEdge(graphs[3], 0, 1, 1);  addEdge(graphs[3], 1, 0, 1);
-//     addEdge(graphs[3], 1, 2, 1);  addEdge(graphs[3], 2, 1, 1);
-//     addEdge(graphs[3], 2, 3, 1);  addEdge(graphs[3], 3, 2, 1);
-//     addEdge(graphs[3], 3, 4, 1);  addEdge(graphs[3], 4, 3, 1);
-
-//     for (int i = 0; i < 4; i++) {
-//         printf("\n==Original Graph %d Edges ==\n", i + 1);
-//         displayGraph(graphs[i]);
-
-//         msts[i] = kruskalMST(graphs[i]);
-
-//         printf("Minimum Spanning Tree %d Edges:\n", i + 1);
-//         displayGraph(msts[i]);
-//         printf("\n");
-//     }
-
-//     for (int i = 0; i < 4; i++) {
-//         for (int j = 0; j < msts[i]->V; j++) {
-//             Node* curr = msts[i]->adjList[j];
-//             while (curr) {
-//                 Node* temp = curr;
-//                 curr = curr->next;
-//                 free(temp);
-//             }
-//         }
-//         free(msts[i]);
-
-//         for (int j = 0; j < graphs[i]->V; j++) {
-//             Node* curr = graphs[i]->adjList[j];
-//             while (curr) {
-//                 Node* temp = curr;
-//                 curr = curr->next;
-//                 free(temp);
-//             }
-//         }
-//         free(graphs[i]);
-//     }
-
-//     return 0;
-// }
