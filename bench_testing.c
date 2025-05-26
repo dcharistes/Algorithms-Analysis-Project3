@@ -55,16 +55,21 @@ int main() {
         printf("\n==Original Graph %d Edges ==\n", j + 1);
         displayGraph(graphs[j]);
 
-        //prim run
+        //prim
 
         printf("Minimum Spanning Tree %d Edges, using Prim:\n", j + 1);
-        displayGraph(msts[j]);
         printf("\n");
 
+        //kruskal
         msts[j] = kruskalMST(graphs[j]);
 
         printf("Minimum Spanning Tree %d Edges, using Kruskal:\n", j + 1);
         displayGraph(msts[j]);
+        printf("\n");
+
+        //reverse-delete
+
+        printf("Minimum Spanning Tree %d Edges, using Reverse-Delete:\n", j + 1);
         printf("\n");
     }
 }
