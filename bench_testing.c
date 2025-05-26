@@ -16,36 +16,36 @@ int main() {
 
     for (int i = 0; i < N; i++){
         graphs[i] = (Graph*) malloc(sizeof(Graph));
-        initGraph(graphs[i], V);
+        initGraph(graphs[i], V);                //has to be the same for all three algorithms
 
-        bool edgeExists[V][V] = { 0 };
+        bool edgedIn[V][V] = { 0 };             //function to hold already added u, v edges
 
-        for (int u = 0; u < V; u++) {
+        for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
             int v;
             do {
-                v = rand() % V;
-            } while (v == u || edgeExists[u][v]);
+                v = rand() % V;                 //select a random v from (0, V-1)
+            } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
 
-            int w = rand() % (2*V);
+            int w = rand() % (2*V);             //weight of the u, v edge
 
-            addEdge(graphs[i], u, v, w);
-            addEdge(graphs[i], v, u, w);
-            edgeExists[u][v] = edgeExists[v][u] = 1;
+            addEdge(graphs[i], u, v, w);        //add edge u, v
+            addEdge(graphs[i], v, u, w);        //add edge v, u (undirected graph)
+            edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
         }
 
-        int addedEdges = V; // Already added V edges in step 1
-        while (addedEdges < E) {
-            int u = rand() % V;
+        int addedEdges = V;                     // Already added E/2 edges in step 1
+        while (addedEdges < E) {                // add the remaining E/2 = V edges.
+            int u = rand() % V;                 //u is now also selected randomly
             int v = rand() % V;
-            if (u == v || edgeExists[u][v])
+            if (u == v || edgedIn[u][v])        //exclude same vertex ends and already added edges
                 continue;
 
             int w = rand() % (2*V);
 
             addEdge(graphs[i], u, v, w);
             addEdge(graphs[i], v, u, w);
-            edgeExists[u][v] = edgeExists[v][u] = 1;
-            addedEdges++;
+            edgedIn[u][v] = edgedIn[v][u] = 1;
+            addedEdges++;                       //increment addedEdges for the while condition termination
         }
 
     }
