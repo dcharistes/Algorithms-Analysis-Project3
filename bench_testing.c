@@ -7,9 +7,15 @@
 #define V 10
 #define N 4
 #define E 2*V
-
+float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
 int main() {
     srand(time(NULL));
+
+    FILE* log_prim = fopen("log_prim.csv", "w");
+    FILE* log_kruskal = fopen("log_kruskal.csv", "w");
+    FILE* log_re_del = fopen("log_re_del.csv", "w");
+
+    const char* label[3] = {"Prim", "Kruskal", "Reverse-Delete"};
 
     Graph* graphs[N];
     Graph* msts[N];
@@ -51,17 +57,18 @@ int main() {
     }
 
     for (int j = 0; j < N; j++){
-
+        int k = 0;
         printf("\n==== Original Graph %d Edges ====\n", j + 1);
         displayGraph(graphs[j]);
 
         //prim
-
+        k++;
         printf("Prim - Minimum Spanning Tree %d Edges:\n", j + 1);
         printf("\n");
 
         //kruskal
-        msts[j] = kruskalMST(graphs[j]);
+        float time_kruskal = time_function(kruskalMST, graphs[j], &msts[j], label[k], j);
+        //msts[j] = kruskalMST(graphs[j]);
 
         printf("Kruskal - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
@@ -72,4 +79,13 @@ int main() {
         printf("Reverse-Delete - Minimum Spanning Tree %d Edges:\n", j + 1);
         printf("\n");
     }
+}
+
+float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j){
+    clock_t start = clock();
+    *mst = func(graph);
+    clock_t end =  clock();
+    double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("%s found the minimum spanning tree of %d graph in %.6f seconds\n", label, j, time_spent);
+    return time_spent;
 }
