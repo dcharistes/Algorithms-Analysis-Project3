@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
-#include "task2.h"  // Χρησιμοποιούμε τις δομές και συναρτήσεις από task2.h
+#include "task.h"  // Χρησιμοποιούμε τις δομές και συναρτήσεις από task2.h
 
 // minCost αναζητά την κορυφή με ελάχιστο κόστος
 int minCost(int cost[], bool known[], int n) {
@@ -17,7 +17,7 @@ int minCost(int cost[], bool known[], int n) {
 }
 
 // Prim’s MST χρησιμοποιεί Graph από task2.h
-void primMST(Graph* g) {
+Graph* primMST(Graph* g) {
     int n = g->V;
     int path[n], cost[n];
     bool known[n];
@@ -40,11 +40,7 @@ void primMST(Graph* g) {
             }
         }
     }
-
-    printf("\nPrim MST\n");
-    for (int i = 1; i < n; i++) {
-        printf("%d -> %d    %d\n", path[i], i, cost[i]);
-    }
+    return g;
 }
 
 /*
@@ -83,7 +79,7 @@ int main(void) {
     addEdge(g3,3,4,1);  addEdge(g3,4,3,1);
     printf("\n=== Graph 3 ===");
     primMST(g3);
-    
+
     // Γράφος 4 (V=5)
     Graph* g4 = malloc(sizeof(Graph));
     initGraph(g4, 5);

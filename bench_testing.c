@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include "task2.h"
+#include "task.h"
 
-#define V 10
+#define V 100
 #define N 4
 #define E 2*V
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
@@ -36,7 +36,7 @@ int main() {
                 v = rand() % V;                 //select a random v from (0, V-1)
             } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
 
-            int w = rand() % (2*V);             //weight of the u, v edge
+            int w = rand() % 20;             //weight of the u, v edge
 
             addEdge(graphs[i], u, v, w);        //add edge u, v
             addEdge(graphs[i], v, u, w);        //add edge v, u (undirected graph)
@@ -64,23 +64,28 @@ int main() {
         displayGraph(graphs[j]);
 
         //prim
-        k++;
+        float time_prim = time_function(primMST, graphs[j], &msts[j], label[k], j);
         printf("Prim - Minimum Spanning Tree %d Edges:\n", j + 1);
+        displayGraph(msts[j]);
         printf("\n");
+        fprintf(log_prim,"%d, %.6f\n",j, time_prim);
+
+        k++;
 
         //kruskal
         float time_kruskal = time_function(kruskalMST, graphs[j], &msts[j], label[k], j);
-        //msts[j] = kruskalMST(graphs[j]);
-
-
         printf("Kruskal - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
         printf("\n");
         fprintf(log_kruskal,"%d,%.6f\n", j, time_kruskal);
-        //reverse-delete
+        k++;
 
+        //reverse-delete
+        float time_re_del = 0; // = time_function(...)
         printf("Reverse-Delete - Minimum Spanning Tree %d Edges:\n", j + 1);
+        displayGraph(msts[j]);
         printf("\n");
+        fprintf(log_re_del,"%d,%.6f\n", j, time_re_del);
     }
 }
 
