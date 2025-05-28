@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
-#include "task.h"  // Χρησιμοποιούμε τις δομές και συναρτήσεις από task2.h
+#include "./data_structure/task.h"  // Χρησιμοποιούμε τις δομές και συναρτήσεις από task2.h
 
 // minCost αναζητά την κορυφή με ελάχιστο κόστος
 int minCost(int cost[], bool known[], int n) {
@@ -40,7 +40,19 @@ Graph* primMST(Graph* g) {
             }
         }
     }
-    return g;
+
+    Graph* mst = (Graph*)malloc(sizeof(Graph));
+    initGraph(mst, g->V);
+    for (int v = 1; v < n; v++) {
+        int u = path[v];
+        if (u != -1) {
+            // Εισαγωγή της ακμής και στις δύο κατευθύνσεις αν είναι μη κατευθυνόμενο γράφημα
+            addEdge(mst, u, v, cost[v]);
+            addEdge(mst, v, u, cost[v]);
+        }
+    }
+    return mst;
+
 }
 
 /*

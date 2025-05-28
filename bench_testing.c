@@ -2,18 +2,18 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include "task.h"
+#include "./data_structure/task.h"
 
-#define V 100
+#define V 5
 #define N 4
 #define E 2*V
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
 int main() {
     srand(time(NULL));
 
-    FILE* log_prim = fopen("log_prim.csv", "w");
-    FILE* log_kruskal = fopen("log_kruskal.csv", "w");
-    FILE* log_re_del = fopen("log_re_del.csv", "w");
+    FILE* log_prim = fopen("./logs/log_prim.csv", "w");
+    FILE* log_kruskal = fopen("./logs/log_kruskal.csv", "w");
+    FILE* log_re_del = fopen("./logs/log_re_del.csv", "w");
 
     const char* label[3] = {"Prim", "Kruskal", "Reverse-Delete"};
 
@@ -87,6 +87,10 @@ int main() {
         printf("\n");
         fprintf(log_re_del,"%d,%.6f\n", j, time_re_del);
     }
+
+    fclose(log_prim);
+    fclose(log_kruskal);
+    fclose(log_re_del);
 }
 
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j){

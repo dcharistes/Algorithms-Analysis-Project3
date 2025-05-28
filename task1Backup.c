@@ -36,8 +36,8 @@ Graph* createGraph() {
 
 void addEdge(Graph* g, int u, int v, int w) {
     Node* n = newNode(v, w);
-    n->next = g->adjList[u];
-    g->adjList[u] = n;
+    n->next = g->adjList[u].head;
+    g->adjList[u].head = n;
 }
 
 /* ——— εύρεση κορυφής με ελάχιστο cost ——— */
@@ -68,7 +68,7 @@ void primMST(Graph* g) {
     for (int k = 0; k < V-1; k++) {
         int u = minCost(cost, known);
         known[u] = true;
-        for (Node* p = g->adjList[u]; p; p = p->next) {
+        for (Node* p = g->adjList[u].head; p; p = p->next) {
             int v = p->dest, w = p->weight;
             if (!known[v] && w < cost[v]) {
                 cost[v]  = w;
@@ -115,7 +115,7 @@ int main(void) {
     addEdge(g3,3,4,1);  addEdge(g3,4,3,1);
     printf("\n=== Graph 3 ===");
     primMST(g3);
-    
+
     /* ——— Graph 4: αλυσίδα (path graph V=5) ——— */
     Graph* g4 = createGraph();
     addEdge(g4, 0, 1, 1);  addEdge(g4, 1, 0, 1);

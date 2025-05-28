@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "task.h"
+#include "./data_structure/task.h"
 
 // Initializes the disjoint set with n elements.
 void initDisjointSet(DisjointSet* ds, int n) {
