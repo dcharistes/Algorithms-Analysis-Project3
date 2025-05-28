@@ -1,6 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
+#ifndef TASK_H
+#define TASK_H
 
 #define MAX_NODES 100
 
@@ -32,15 +31,4 @@ Node* createNode(int dest, int weight);
 void addEdge(Graph* g, int u, int v, int weight);
 void displayGraph(Graph* g);
 
-//prim functions defined task1.c
-int minCost(int cost[], bool known[], int n);
-Graph* primMST(Graph* g); //prim algorithm
-
-//kruskal functions defined task2.c
-void initDisjointSet(DisjointSet* ds, int n);
-void freeDisjointSet(DisjointSet* ds);
-void extractEdges(Graph* g, Edge* edgeList, int* edgeCount);
-int find(DisjointSet* ds, int v);
-int unionSet(DisjointSet* ds, int u, int v);
-int compEdges(const void* a, const void* b);
-Graph* kruskalMST(Graph* g); //kruskal algorithm
+#endif

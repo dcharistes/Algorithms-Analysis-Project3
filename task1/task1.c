@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
-#include "./data_structure/task.h"  // Χρησιμοποιούμε τις δομές και συναρτήσεις από task2.h
+#include "task1.h"  // Χρησιμοποιούμε τις δομές και συναρτήσεις από task2.h
 
 // minCost αναζητά την κορυφή με ελάχιστο κόστος
 int minCost(int cost[], bool known[], int n) {

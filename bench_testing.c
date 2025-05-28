@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include "./data_structure/task.h"
+#include "./task1/task1.h"
+#include "./task2/task2.h"
 
 #define V 5
 #define N 4
