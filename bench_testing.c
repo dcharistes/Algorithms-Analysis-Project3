@@ -17,6 +17,10 @@ int main() {
 
     const char* label[3] = {"Prim", "Kruskal", "Reverse-Delete"};
 
+    fprintf(log_prim,"n,time\n");
+    fprintf(log_kruskal,"n,time\n");
+    fprintf(log_re_del,"n,time\n");
+
     Graph* graphs[N];
     Graph* msts[N];
 
@@ -53,9 +57,7 @@ int main() {
             edgedIn[u][v] = edgedIn[v][u] = 1;
             addedEdges++;                       //increment addedEdges for the while condition termination
         }
-
     }
-
     for (int j = 0; j < N; j++){
         int k = 0;
         printf("\n==== Original Graph %d Edges ====\n", j + 1);
@@ -70,10 +72,11 @@ int main() {
         float time_kruskal = time_function(kruskalMST, graphs[j], &msts[j], label[k], j);
         //msts[j] = kruskalMST(graphs[j]);
 
+
         printf("Kruskal - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
         printf("\n");
-
+        fprintf(log_kruskal,"%d,%.6f\n", j, time_kruskal);
         //reverse-delete
 
         printf("Reverse-Delete - Minimum Spanning Tree %d Edges:\n", j + 1);
