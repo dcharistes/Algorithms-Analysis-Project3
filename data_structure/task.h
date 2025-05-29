@@ -1,7 +1,7 @@
 #ifndef TASK_H
 #define TASK_H
 
-#define MAX_NODES 5000
+#define MAX_NODES 20
 
 //structs
 typedef struct Node {

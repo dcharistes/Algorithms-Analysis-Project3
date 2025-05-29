@@ -5,9 +5,9 @@
 #include "./task1/task1.h"
 #include "./task2/task2.h"
 
-#define V 10
+#define V 5
 #define N 4
-#define E 2*V
+//#define E (2*V - rand() % 5)
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
 int main() {
     srand(time(NULL));
@@ -24,7 +24,8 @@ int main() {
 
     Graph* graphs[N];
     Graph* msts[N];
-
+    int E = 2*V - rand() % V;
+    printf("E = %d\n", E);
     for (int i = 0; i < N; i++){
         graphs[i] = (Graph*) malloc(sizeof(Graph));
         initGraph(graphs[i], V);                //has to be the same for all three algorithms
@@ -38,22 +39,26 @@ int main() {
             } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
 
             int w = rand() % 20;             //weight of the u, v edge
-
+            //printf("u = %d, v = %d, w = %d\n", u, v, w);
             addEdge(graphs[i], u, v, w);        //add edge u, v
+            //printf("g(%d)->adjList[%d] = %d, next = %d\n", i, u, graphs[i]->adjList[u]->dest, graphs[i]->adjList[u]->next->dest);
             addEdge(graphs[i], v, u, w);        //add edge v, u (undirected graph)
             edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
         }
-
+        //printf("\n");
         int addedEdges = V;                     // Already added E/2 edges in step 1
         while (addedEdges < E) {                // add the remaining E/2 = V edges.
             int u = rand() % V;                 //u is now also selected randomly
+            //printf("u = %d\n", u);
             int v = rand() % V;
+            //printf("v = %d\n", v);
             if (u == v || edgedIn[u][v])        //exclude same vertex ends and already added edges
                 continue;
 
-            int w = rand() % (2*V);
-
+            int w = rand() % (2*E);
+            //printf("u = %d, v = %d, w = %d\n", u, v, w);
             addEdge(graphs[i], u, v, w);
+            //printf("g(%d)->adjList[%d] = %d, next = %d\n", i, u, graphs[i]->adjList[u]->dest, graphs[i]->adjList[u]->next->dest);
             addEdge(graphs[i], v, u, w);
             edgedIn[u][v] = edgedIn[v][u] = 1;
             addedEdges++;                       //increment addedEdges for the while condition termination
