@@ -18,22 +18,6 @@ void freeDisjointSet(DisjointSet* ds) {
     free(ds->rank);
 }
 
-void extractEdges(Graph* g, Edge* edgeList, int* edgeCount) {
-    *edgeCount = 0;
-    for (int i = 0; i < g->V; i++) {
-        Node* curr = g->adjList[i];
-        while (curr) {
-            if (i < curr->dest) { // avoid duplicates
-                edgeList[*edgeCount].u = i;
-                edgeList[*edgeCount].v = curr->dest;
-                edgeList[*edgeCount].weight = curr->weight;
-                (*edgeCount)++;
-            }
-            curr = curr->next;
-        }
-    }
-}
-
 // Uses path compression to find the representative of the set containing v.
 // the tree formed with the vertices of the set is always flattened acieving optimization.
 //each node on the path points directly to the root minimizing the depth

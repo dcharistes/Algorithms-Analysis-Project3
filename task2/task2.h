@@ -2,10 +2,10 @@
 #define TASK2_H
 #include "../data_structure/task.h"
 
-//kruskal functions defined task2.c
+//disjoint set functions
 void initDisjointSet(DisjointSet* ds, int n);
 void freeDisjointSet(DisjointSet* ds);
-void extractEdges(Graph* g, Edge* edgeList, int* edgeCount);
+//kruskal functions
 int find(DisjointSet* ds, int v);
 int unionSet(DisjointSet* ds, int u, int v);
 int compEdges(const void* a, const void* b);

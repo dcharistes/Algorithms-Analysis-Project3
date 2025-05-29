@@ -1,7 +1,7 @@
 #ifndef TASK_H
 #define TASK_H
 
-#define MAX_NODES 100
+#define MAX_NODES 5000
 
 //structs
 typedef struct Node {
@@ -24,11 +24,11 @@ typedef struct {
     int size;               //size in the n of elements in the ds
 } DisjointSet;
 
-
 //data structure defined in task.c
-void initGraph(Graph* g, int vertices);
 Node* createNode(int dest, int weight);
 void addEdge(Graph* g, int u, int v, int weight);
+void extractEdges(Graph* g, Edge* edgeList, int* edgeCount);
+void initGraph(Graph* g, int vertices);
 void displayGraph(Graph* g);
 
 #endif

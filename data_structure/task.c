@@ -23,6 +23,22 @@ void addEdge(Graph* g, int u, int v, int weight) {
     g->adjList[u] = newNode;
 }
 
+void extractEdges(Graph* g, Edge* edgeList, int* edgeCount) {
+    *edgeCount = 0;
+    for (int i = 0; i < g->V; i++) {
+        Node* curr = g->adjList[i];
+        while (curr) {
+            if (i < curr->dest) { // avoid duplicates
+                edgeList[*edgeCount].u = i;
+                edgeList[*edgeCount].v = curr->dest;
+                edgeList[*edgeCount].weight = curr->weight;
+                (*edgeCount)++;
+            }
+            curr = curr->next;
+        }
+    }
+}
+
 void displayGraph(Graph* g) {
     for (int i = 0; i < g->V; i++) {
         Node* curr = g->adjList[i];
