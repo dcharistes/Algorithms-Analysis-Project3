@@ -5,7 +5,7 @@
 #include "./task1/task1.h"
 #include "./task2/task2.h"
 
-#define V 5
+#define V 10
 #define N 4
 #define E 2*V
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
