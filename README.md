@@ -6,12 +6,12 @@ This project contains implementations of three algorithms for finding the Minimu
 - Kruskal's Algorithm
 - Reverse-Delete Algorithm
 
-All three algorithms in this project are implemented using an adjacency list representation of graphs. The core data structures — Graph, Node, and Edge — are defined once and reused across all algorithm implementations, ensuring clarity and modularity. In addition, several utility functions are provided for graph manipulation (e.g., adding edges, extracting edge lists, and initializing graphs). These functions enable a shared interface and simplify benchmarking.
+All three algorithms in this project are implemented using an adjacency list representation of graphs. The core data structures — Graph, Node, and Edge — are defined once and reused across all algorithm implementations, ensuring modularity and validity in benchmark testing. In addition, several utility functions are share provided between the algorithms for graph manipulation (e.g., adding edges, extracting edge lists, and initializing graphs). These functions enable a shared interface.
 
 The core objectives of the project are:
 
 - Benchmark testing framework for performance evaluation
-- Algorithmic Analysis, Theory validation and conclusions 
+- Algorithmic Analysis, Theory validation and conclusions
 
 ## 🧪 Compilation
 
