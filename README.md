@@ -7,8 +7,6 @@ This project contains implementations of multiple algorithms related to Minimum 
 - Utility functions for graphs using adjacency list representation
 - Benchmark testing framework for performance evaluation
 
-## 📁 Project Structure
-
 ## 🧪 Compilation
 
 To compile the entire project:
