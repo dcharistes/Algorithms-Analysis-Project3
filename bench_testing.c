@@ -5,7 +5,7 @@
 #include "./task1/task1.h"
 #include "./task2/task2.h"
 
-#define V 5
+#define V 10
 #define N 4
 //#define E (2*V - rand() % 5)
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
@@ -24,8 +24,14 @@ int main() {
 
     Graph* graphs[N];
     Graph* msts[N];
-    int E = 2*V - rand() % V;
-    printf("E = %d\n", E);
+    int max_edges = V*(V-1)/2;
+    int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
+    printf("V = %d, E = %d\n", V, E);
+
+    if (E >= 0.75 * max_edges)
+        printf("Dense Graph\n");
+    printf("Sparse Graph\n");
+
     for (int i = 0; i < N; i++){
         graphs[i] = (Graph*) malloc(sizeof(Graph));
         initGraph(graphs[i], V);                //has to be the same for all three algorithms
