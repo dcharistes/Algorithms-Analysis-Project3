@@ -49,7 +49,7 @@ int unionSet(DisjointSet* ds, int u, int v) {
 }
 
 Graph* kruskalMST(Graph* g) {
-    Edge edges[2 * MAX_NODES];
+    Edge edges[MAX_NODES * MAX_NODES];
     int edgeCount;
 
     extractEdges(g, edges, &edgeCount);                 //we extracted all the edges from the given graph. Also extract the size of the edgeList after it is filled . with u, v, and weight and

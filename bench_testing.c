@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <math.h>
 #include "./task1/task1.h"
 #include "./task2/task2.h"
 #include "./task3/task3.h"
 
-#define V 10
+#define V 30
 #define N 4
 //#define E (2*V - rand() % 5)
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
@@ -29,9 +30,10 @@ int main() {
     int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
     printf("V = %d, E = %d\n", V, E);
 
-    if (E >= 0.75 * max_edges)
+    if (E >= V*log10(V))
         printf("Dense Graph\n");
-    printf("Sparse Graph\n");
+    else
+        printf("Sparse Graph\n");
 
     for (int i = 0; i < N; i++){
         graphs[i] = (Graph*) malloc(sizeof(Graph));
@@ -103,6 +105,13 @@ int main() {
     fclose(log_prim);
     fclose(log_kruskal);
     fclose(log_re_del);
+
+    printf("V = %d, E = %d\n", V, E);
+
+    if (E >= V*log10(V))
+        printf("Dense Graph\n");
+    else
+        printf("Sparse Graph\n");
 }
 
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j){
