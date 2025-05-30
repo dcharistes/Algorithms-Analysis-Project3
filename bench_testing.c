@@ -4,6 +4,7 @@
 #include <time.h>
 #include "./task1/task1.h"
 #include "./task2/task2.h"
+#include "./task3/task3.h"
 
 #define V 10
 #define N 4
@@ -81,7 +82,6 @@ int main() {
         displayGraph(msts[j]);
         printf("\n");
         fprintf(log_prim,"%d, %.6f\n",j, time_prim);
-
         k++;
 
         //kruskal
@@ -93,7 +93,7 @@ int main() {
         k++;
 
         //reverse-delete
-        float time_re_del = 0; // = time_function(...)
+        float time_re_del = time_function(reverseDeleteMST, graphs[j], &msts[j], label[k], j); // = time_function(...)
         printf("Reverse-Delete - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
         printf("\n");

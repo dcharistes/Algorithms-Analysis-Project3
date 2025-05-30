@@ -49,3 +49,9 @@ void displayGraph(Graph* g) {
         }
     }
 }
+
+int compEdges(const void* a, const void* b) {
+    Edge* e1 = (Edge*)a;
+    Edge* e2 = (Edge*)b;
+    return e1->weight - e2->weight;                     //sort edges based on weight. if (> 0) ? e2 has a smaller weight : e1. and so on the edges list is sorted
+}
