@@ -48,7 +48,6 @@ Graph* primMST(Graph* g) {
         if (u != -1) {
             // Εισαγωγή της ακμής και στις δύο κατευθύνσεις αν είναι μη κατευθυνόμενο γράφημα
             addEdge(mst, u, v, cost[v]);
-            addEdge(mst, v, u, cost[v]);
         }
     }
     return mst;

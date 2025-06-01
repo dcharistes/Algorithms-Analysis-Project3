@@ -7,7 +7,7 @@
 #include "./task2/task2.h"
 #include "./task3/task3.h"
 
-#define V 30
+#define V 10
 #define N 4
 //#define E (2*V - rand() % 5)
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
@@ -30,7 +30,7 @@ int main() {
     int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
     printf("V = %d, E = %d\n", V, E);
 
-    if (E >= V*log10(V))
+    if (E > V*log10(V) + log10(V))
         printf("Dense Graph\n");
     else
         printf("Sparse Graph\n");
@@ -49,9 +49,7 @@ int main() {
 
             int w = rand() % 20;             //weight of the u, v edge
             //printf("u = %d, v = %d, w = %d\n", u, v, w);
-            addEdge(graphs[i], u, v, w);        //add edge u, v
-            //printf("g(%d)->adjList[%d] = %d, next = %d\n", i, u, graphs[i]->adjList[u]->dest, graphs[i]->adjList[u]->next->dest);
-            addEdge(graphs[i], v, u, w);        //add edge v, u (undirected graph)
+            addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
             edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
         }
         //printf("\n");
@@ -67,36 +65,34 @@ int main() {
             int w = rand() % (2*E);
             //printf("u = %d, v = %d, w = %d\n", u, v, w);
             addEdge(graphs[i], u, v, w);
-            //printf("g(%d)->adjList[%d] = %d, next = %d\n", i, u, graphs[i]->adjList[u]->dest, graphs[i]->adjList[u]->next->dest);
-            addEdge(graphs[i], v, u, w);
             edgedIn[u][v] = edgedIn[v][u] = 1;
             addedEdges++;                       //increment addedEdges for the while condition termination
         }
     }
     for (int j = 0; j < N; j++){
         int k = 0;
-        printf("\n==== Original Graph %d Edges ====\n", j + 1);
+        printf("\n==== Original Graph %d ====\n", j + 1);
         displayGraph(graphs[j]);
 
         //prim
+        printf("\nPrim - Minimum Spanning Tree %d\n", j + 1);
         float time_prim = time_function(primMST, graphs[j], &msts[j], label[k], j);
-        printf("Prim - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
         printf("\n");
         fprintf(log_prim,"%d, %.6f\n",j, time_prim);
         k++;
 
         //kruskal
+        printf("Kruskal - Minimum Spanning Tree %d\n", j + 1);
         float time_kruskal = time_function(kruskalMST, graphs[j], &msts[j], label[k], j);
-        printf("Kruskal - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
         printf("\n");
         fprintf(log_kruskal,"%d,%.6f\n", j, time_kruskal);
         k++;
 
         //reverse-delete
+        printf("Reverse-Delete - Minimum Spanning Tree %d\n", j + 1);
         float time_re_del = time_function(reverseDeleteMST, graphs[j], &msts[j], label[k], j); // = time_function(...)
-        printf("Reverse-Delete - Minimum Spanning Tree %d Edges:\n", j + 1);
         displayGraph(msts[j]);
         printf("\n");
         fprintf(log_re_del,"%d,%.6f\n", j, time_re_del);
@@ -108,7 +104,7 @@ int main() {
 
     printf("V = %d, E = %d\n", V, E);
 
-    if (E >= V*log10(V))
+    if (E > V*log10(V) + log10(V))
         printf("Dense Graph\n");
     else
         printf("Sparse Graph\n");

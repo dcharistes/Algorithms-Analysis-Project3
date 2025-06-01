@@ -13,6 +13,16 @@ void removeEdge(Graph* g, int u, int v) {
         *curr = temp->next;
         free(temp);
     }
+
+    Node** curr2 = &g->adjList[v];
+    while (*curr2 && (*curr2)->dest != u) {
+        curr2 = &(*curr2)->next;
+    }
+    if (*curr2) {
+        Node* temp = *curr2;
+        *curr2 = temp->next;
+        free(temp);
+    }
 }
 
 // DFS traversal
@@ -52,16 +62,14 @@ Graph* reverseDeleteMST(Graph* g){
         int w = edges[i].weight;
 
         removeEdge(g, u, v);
-        removeEdge(g, v, u);
 
         if (!isConnected(g)){
-            addEdge(g, u, v, w);
-            addEdge(g, v, u, w);
 
+            addEdge(g, u, v, w);
             totalWeight += w;
         }
     }
-    printf("Total MST Weight = %d", totalWeight);
+    printf("Total MST Weight = %d\n", totalWeight);
 
     return g;
 }

@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <limits.h>
 
-#define V 5   // στατικό μέγεθος γράφου
+#define V 8   // στατικό μέγεθος γράφου
 
 /* ——— Δομή λίστας γειτνίασης (Εργ.4) ——— */
 typedef struct Node {
@@ -85,45 +85,50 @@ void primMST(Graph* g) {
 
 int main(void) {
     /* ——— Graph 1: ίδιος με Εργ.5 (V=5) ——— */
-    Graph* g1 = createGraph();
-    addEdge(g1,0,1,2);  addEdge(g1,1,0,2);
-    addEdge(g1,0,3,6);  addEdge(g1,3,0,6);
-    addEdge(g1,1,2,3);  addEdge(g1,2,1,3);
-    addEdge(g1,1,3,8);  addEdge(g1,3,1,8);
-    addEdge(g1,1,4,5);  addEdge(g1,4,1,5);
-    addEdge(g1,2,4,7);  addEdge(g1,4,2,7);
-    addEdge(g1,3,4,9);  addEdge(g1,4,3,9);
-    printf("=== Graph 1 ===");
-    primMST(g1);
+    // Graph* g1 = createGraph();
+    // addEdge(g1,0,1,2);  addEdge(g1,1,0,2);
+    // addEdge(g1,0,3,6);  addEdge(g1,3,0,6);
+    // addEdge(g1,1,2,3);  addEdge(g1,2,1,3);
+    // addEdge(g1,1,3,8);  addEdge(g1,3,1,8);
+    // addEdge(g1,1,4,5);  addEdge(g1,4,1,5);
+    // addEdge(g1,2,4,7);  addEdge(g1,4,2,7);
+    // addEdge(g1,3,4,9);  addEdge(g1,4,3,9);
+    // printf("=== Graph 1 ===");
+    // primMST(g1);
 
     /* ——— Graph 2: 5-κορυφών κύκλος ——— */
     Graph* g2 = createGraph();
-    addEdge(g2, 0, 1, 2);  addEdge(g2, 1, 0, 2);
-    addEdge(g2, 1, 2, 3);  addEdge(g2, 2, 1, 3);
-    addEdge(g2, 2, 3, 4);  addEdge(g2, 3, 2, 4);
-    addEdge(g2, 3, 4, 5);  addEdge(g2, 4, 3, 5);
-    addEdge(g2, 4, 0, 1);  addEdge(g2, 0, 4, 1);
+    addEdge(g2, 0, 1, 9);  addEdge(g2, 1, 0, 9);
+    addEdge(g2, 1, 5, 6);  addEdge(g2, 5, 1, 6);
+    addEdge(g2, 1, 6, 2);  addEdge(g2, 6, 1, 2);
+    addEdge(g2, 2, 6, 8);  addEdge(g2, 6, 2, 8);
+    addEdge(g2, 3, 7, 2);  addEdge(g2, 7, 3, 2);
+    addEdge(g2, 4, 6, 7);  addEdge(g2, 6, 4, 7);
+    addEdge(g2, 4, 7, 1);  addEdge(g2, 7, 4, 1);
+    addEdge(g2, 5, 6, 5);  addEdge(g2, 6, 5, 5);
+    addEdge(g2, 7, 5, 7);  addEdge(g2, 5, 7, 7);
+    addEdge(g2, 6, 7, 8);  addEdge(g2, 7, 6, 8);
     printf("\n=== Graph 2 ===");
     primMST(g2);
 
-    /* ——— Graph 3: custom 5-κορυφών ——— */
-    Graph* g3 = createGraph();
-    addEdge(g3,0,1,7);  addEdge(g3,1,0,7);
-    addEdge(g3,0,2,9);  addEdge(g3,2,0,9);
-    addEdge(g3,1,3,10); addEdge(g3,3,1,10);
-    addEdge(g3,2,3,2);  addEdge(g3,3,2,2);
-    addEdge(g3,3,4,1);  addEdge(g3,4,3,1);
-    printf("\n=== Graph 3 ===");
-    primMST(g3);
+    // /* ——— Graph 3: custom 5-κορυφών ——— */
+    // Graph* g3 = createGraph();
+    // addEdge(g3,0,1,7);  addEdge(g3,1,0,7);
+    // addEdge(g3,0,2,9);  addEdge(g3,2,0,9);
+    // addEdge(g3,1,3,10); addEdge(g3,3,1,10);
+    // addEdge(g3,2,3,2);  addEdge(g3,3,2,2);
+    // addEdge(g3,3,4,1);  addEdge(g3,4,3,1);
+    // printf("\n=== Graph 3 ===");
+    // primMST(g3);
 
-    /* ——— Graph 4: αλυσίδα (path graph V=5) ——— */
-    Graph* g4 = createGraph();
-    addEdge(g4, 0, 1, 1);  addEdge(g4, 1, 0, 1);
-    addEdge(g4, 1, 2, 1);  addEdge(g4, 2, 1, 1);
-    addEdge(g4, 2, 3, 1);  addEdge(g4, 3, 2, 1);
-    addEdge(g4, 3, 4, 1);  addEdge(g4, 4, 3, 1);
-    printf("\n=== Graph 4 ===");
-    primMST(g4);
+    // /* ——— Graph 4: αλυσίδα (path graph V=5) ——— */
+    // Graph* g4 = createGraph();
+    // addEdge(g4, 0, 1, 1);  addEdge(g4, 1, 0, 1);
+    // addEdge(g4, 1, 2, 1);  addEdge(g4, 2, 1, 1);
+    // addEdge(g4, 2, 3, 1);  addEdge(g4, 3, 2, 1);
+    // addEdge(g4, 3, 4, 1);  addEdge(g4, 4, 3, 1);
+    // printf("\n=== Graph 4 ===");
+    // primMST(g4);
 
     return 0;
 }

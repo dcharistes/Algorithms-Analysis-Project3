@@ -70,7 +70,6 @@ Graph* kruskalMST(Graph* g) {
 
         if (unionSet(&ds, u, v)) {
             addEdge(mst, u, v, w);
-            addEdge(mst, v, u, w);
             totalWeight += w;
         }
     }
