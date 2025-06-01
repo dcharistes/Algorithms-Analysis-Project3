@@ -21,6 +21,10 @@ void addEdge(Graph* g, int u, int v, int weight) {
     Node* newNode = createNode(v, weight);
     newNode->next = g->adjList[u];
     g->adjList[u] = newNode;
+
+    Node* newNode2 = createNode(u, weight);
+    newNode2->next = g->adjList[v];
+    g->adjList[v] = newNode2;
 }
 
 void extractEdges(Graph* g, Edge* edgeList, int* edgeCount) {
