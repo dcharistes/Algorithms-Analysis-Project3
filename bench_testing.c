@@ -9,6 +9,7 @@
 
 #define V 10
 #define N 4
+#define manual 0
 //#define E (2*V - rand() % 5)
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j);
 int main() {
@@ -28,46 +29,59 @@ int main() {
     Graph* msts[N];
     int max_edges = V*(V-1)/2;
     int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
+    float density = (float) E / max_edges;
     printf("V = %d, E = %d\n", V, E);
 
-    if (E > V*log10(V) + log10(V))
-        printf("Dense Graph\n");
-    else
-        printf("Sparse Graph\n");
+    if (!manual){
+        for (int i = 0; i < N; i++){
+            graphs[i] = (Graph*) malloc(sizeof(Graph));
+            initGraph(graphs[i], V);                //has to be the same for all three algorithms
 
-    for (int i = 0; i < N; i++){
-        graphs[i] = (Graph*) malloc(sizeof(Graph));
-        initGraph(graphs[i], V);                //has to be the same for all three algorithms
+            bool edgedIn[V][V] = { 0 };             //function to hold already added u, v edges
 
-        bool edgedIn[V][V] = { 0 };             //function to hold already added u, v edges
+            for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
+                int v;
+                do {
+                    v = rand() % V;                 //select a random v from (0, V-1)
+                } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
 
-        for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
-            int v;
-            do {
-                v = rand() % V;                 //select a random v from (0, V-1)
-            } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
+                int w = rand() % 20;             //weight of the u, v edge
+                //printf("u = %d, v = %d, w = %d\n", u, v, w);
+                addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
+                edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
+            }
+            //printf("\n");
+            int addedEdges = V;                     // Already added V edges in step 1
+            while (addedEdges < E) {                // add the remaining E - V edges.
+                int u = rand() % V;                 //u is now also selected randomly
+                //printf("u = %d\n", u);
+                int v = rand() % V;
+                //printf("v = %d\n", v);
+                if (u == v || edgedIn[u][v])        //exclude same vertex ends and already added edges
+                    continue;
 
-            int w = rand() % 20;             //weight of the u, v edge
-            //printf("u = %d, v = %d, w = %d\n", u, v, w);
-            addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
-            edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
+                int w = rand() % V;
+                //printf("u = %d, v = %d, w = %d\n", u, v, w);
+                addEdge(graphs[i], u, v, w);
+                edgedIn[u][v] = edgedIn[v][u] = 1;
+                addedEdges++;                       //increment addedEdges for the while condition termination
+            }
         }
-        //printf("\n");
-        int addedEdges = V;                     // Already added E/2 edges in step 1
-        while (addedEdges < E) {                // add the remaining E/2 = V edges.
-            int u = rand() % V;                 //u is now also selected randomly
-            //printf("u = %d\n", u);
-            int v = rand() % V;
-            //printf("v = %d\n", v);
-            if (u == v || edgedIn[u][v])        //exclude same vertex ends and already added edges
-                continue;
-
-            int w = rand() % (2*E);
-            //printf("u = %d, v = %d, w = %d\n", u, v, w);
-            addEdge(graphs[i], u, v, w);
-            edgedIn[u][v] = edgedIn[v][u] = 1;
-            addedEdges++;                       //increment addedEdges for the while condition termination
-        }
+    }
+    else {
+        graphs[0] = (Graph*) malloc(sizeof(Graph));
+        initGraph(graphs[0], V);
+        //addEdge(graphs[0], 0, 5, 7); //manually input edges
+        addEdge(graphs[0], 0, 1, 9);
+        addEdge(graphs[0], 1, 5, 6);
+        addEdge(graphs[0], 1, 6, 2);
+        addEdge(graphs[0], 2, 6, 8);
+        addEdge(graphs[0], 3, 7, 2);
+        addEdge(graphs[0], 4, 6, 7);
+        addEdge(graphs[0], 4, 7, 1);
+        addEdge(graphs[0], 5, 6, 5);
+        addEdge(graphs[0], 7, 5, 7);
+        addEdge(graphs[0], 6, 7, 8);
     }
     for (int j = 0; j < N; j++){
         int k = 0;
@@ -104,10 +118,11 @@ int main() {
 
     printf("V = %d, E = %d\n", V, E);
 
-    if (E > V*log10(V) + log10(V))
+    if (density >= 0.5)
         printf("Dense Graph\n");
     else
         printf("Sparse Graph\n");
+    printf("density = %.6f\n", density);
 }
 
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j){
