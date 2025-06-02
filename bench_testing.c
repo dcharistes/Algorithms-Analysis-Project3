@@ -7,7 +7,7 @@
 #include "./task2/task2.h"
 #include "./task3/task3.h"
 
-#define V 100
+#define V 10000
 #define N 4
 #define manual 0
 //#define E (2*V - rand() % 5)
@@ -42,28 +42,39 @@ int main() {
                 edgedIn[l] = malloc(V * sizeof(bool));
             }
 
-            for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
-                int v;
-                do {
-                    v = rand() % V;                 //select a random v from (0, V-1)
-                } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
+            // for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
+            //     int v;
+            //     do {
+            //         v = rand() % V;                 //select a random v from (0, V-1)
+            //     } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
 
-                int w = 1 + rand() % 20;             //weight of the u, v edge
-                addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
-                edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
+            //     int w = 1 + rand() % 20;             //weight of the u, v edge
+            //     addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
+            //     edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
+            // }
+
+            // int addedEdges = V; lines (46-57)//randomly select a connection with u.
+                                   //this might produce an unconnected graph. i.e. 1->5, 2->1, 3->6, 4->6, 5->2 (v = 6, e = v-1=5).
+                                   //Prim will return a segmentation fault,
+                                   //as it can not operate with unconnected graphs.
+                                   //as we approach the minimum number of edges e = v-1. the probability of unconnected graph increases.
+
+            for (int u = 0; u < V - 1; u++) {           //select every u in (0, V-1)
+                int w = 1 + rand() % 20;                //weight of the u, v edge
+                addEdge(graphs[i], u, u + 1, w);        //add edge u, u+1 and u+1, u. this makes sure that the graph won't be disconnected by forming a chain
+                edgedIn[u][u+1] = edgedIn[u+1][u] = 1;  //update edgedIn for the two edges added
             }
 
-            int addedEdges = V;                     // Already added V edges in step 1
-            while (addedEdges < E) {                // add the remaining E - V edges.
-                int u = rand() % V;                 //u is now also selected randomly
+            int addedEdges = V - 1;                     // Already added V - 1 edges in step 1
+            while (addedEdges < E) {                    // add the remaining E - (V - 1) edges.
+                int u = rand() % V;                     //u and v is now also selected randomly as we guaranteed in the previous step the connectivity
                 int v = rand() % V;
-                if (u == v || edgedIn[u][v])        //exclude same vertex ends and already added edges
+                if (u == v || edgedIn[u][v])            //exclude same vertex ends and already added edges
                     continue;
 
                 int w = 1 + rand() % 20;
-                //printf("u = %d, v = %d, w = %d\n", u, v, w);
                 addEdge(graphs[i], u, v, w);
-                edgedIn[u][v] = edgedIn[v][u] = 1;
+                edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgedIn for the edge (undirected) added
                 addedEdges++;                       //increment addedEdges for the while condition termination
             }
 
@@ -121,7 +132,7 @@ int main() {
 
     printf("V = %d, E = %d\n", V, E);
 
-    if (density >= 0.5)
+    if (density >= 0.04)
         printf("Dense Graph\n");
     else
         printf("Sparse Graph\n");
