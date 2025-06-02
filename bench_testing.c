@@ -7,7 +7,7 @@
 #include "./task2/task2.h"
 #include "./task3/task3.h"
 
-#define V 10000
+#define V 50
 #define N 4
 #define manual 0
 //#define E (2*V - rand() % 5)
@@ -78,7 +78,8 @@ int main() {
                 addedEdges++;                       //increment addedEdges for the while condition termination
             }
 
-            for (int m = 0; m < V; m++) free(edgedIn[m]);
+            for (int m = 0; m < V; m++)
+                free(edgedIn[m]);
             free(edgedIn);
         }
     }
@@ -124,6 +125,10 @@ int main() {
         displayGraph(msts[j]);
         printf("\n");
         fprintf(log_re_del,"%d,%.6f\n", j, time_re_del);
+    }
+
+    for (int n = 0; n < N; n++){
+        freeGraph(graphs[n]);
     }
 
     fclose(log_prim);

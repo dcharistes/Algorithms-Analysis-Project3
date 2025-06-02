@@ -24,6 +24,7 @@ void addEdge(Graph* g, int u, int v, int weight);
 void extractEdges(Graph* g, Edge* edgeList, int* edgeCount);
 void initGraph(Graph* g, int vertices);
 void displayGraph(Graph* g);
+void freeGraph(Graph* g);
 //sort
 int compEdges(const void* a, const void* b);
 

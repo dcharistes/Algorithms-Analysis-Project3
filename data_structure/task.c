@@ -54,6 +54,18 @@ void displayGraph(Graph* g) {
     }
 }
 
+void freeGraph(Graph* g){
+    for (int v = 0; v < g->V; v++) {
+        Node* curr = g->adjList[v];
+        while (curr) {
+            Node* temp = curr;
+            curr = curr->next;
+            free(temp);
+        }
+    }
+    free(g);
+}
+
 int compEdges(const void* a, const void* b) {
     Edge* e1 = (Edge*)a;
     Edge* e2 = (Edge*)b;
