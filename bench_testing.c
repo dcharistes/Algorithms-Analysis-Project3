@@ -7,7 +7,7 @@
 #include "./task2/task2.h"
 #include "./task3/task3.h"
 
-#define V 50
+#define V 100
 #define N 4
 #define manual 0
 //#define E (2*V - rand() % 5)
@@ -53,13 +53,13 @@ int main() {
             //     edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
             // }
 
-            // int addedEdges = V; lines (46-57)//randomly select a connection with u.
-                                   //this might produce an unconnected graph. i.e. 1->5, 2->1, 3->6, 4->6, 5->2 (v = 6, e = v-1=5).
-                                   //Prim will return a segmentation fault,
-                                   //as it can not operate with unconnected graphs.
-                                   //as we approach the minimum number of edges e = v-1. the probability of unconnected graph increases.
+            // int addedEdges = V; //lines (46-57)//randomly select a connection with u.
+            //                     //    this might produce an unconnected graph. i.e. 1->5, 2->1, 3->6, 4->6, 5->2 (v = 6, e = v-1=5).
+            //                     //    Prim will return a segmentation fault,
+            //                     //    as it can not operate with unconnected graphs.
+            //                     //    as we approach the minimum number of edges e = v-1. the probability of unconnected graph increases.
 
-            for (int u = 0; u < V - 1; u++) {           //select every u in (0, V-1)
+            for (int u = 0; u < V - 1; u++) {          //select every u in (0, V-1)
                 int w = 1 + rand() % 20;                //weight of the u, v edge
                 addEdge(graphs[i], u, u + 1, w);        //add edge u, u+1 and u+1, u. this makes sure that the graph won't be disconnected by forming a chain
                 edgedIn[u][u+1] = edgedIn[u+1][u] = 1;  //update edgedIn for the two edges added
@@ -71,7 +71,6 @@ int main() {
                 int v = rand() % V;
                 if (u == v || edgedIn[u][v])            //exclude same vertex ends and already added edges
                     continue;
-
                 int w = 1 + rand() % 20;
                 addEdge(graphs[i], u, v, w);
                 edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgedIn for the edge (undirected) added
