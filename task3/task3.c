@@ -48,7 +48,11 @@ int isConnected(Graph* g) {
 }
 
 Graph* reverseDeleteMST(Graph* g){
-    Edge edges[MAX_NODES * MAX_NODES];
+    Edge* edges = malloc(sizeof(Edge) * MAX_NODES * MAX_NODES / 2);
+    if (!edges) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
     int edgeCount;
 
     extractEdges(g, edges, &edgeCount);
@@ -69,6 +73,7 @@ Graph* reverseDeleteMST(Graph* g){
             totalWeight += w;
         }
     }
+    free(edges);
     printf("Total MST Weight = %d\n", totalWeight);
 
     return g;

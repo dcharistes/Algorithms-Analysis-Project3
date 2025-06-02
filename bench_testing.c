@@ -7,7 +7,7 @@
 #include "./task2/task2.h"
 #include "./task3/task3.h"
 
-#define V 10
+#define V 100
 #define N 4
 #define manual 0
 //#define E (2*V - rand() % 5)
@@ -37,7 +37,10 @@ int main() {
             graphs[i] = (Graph*) malloc(sizeof(Graph));
             initGraph(graphs[i], V);                //has to be the same for all three algorithms
 
-            bool edgedIn[V][V] = { 0 };             //function to hold already added u, v edges
+            bool **edgedIn = malloc(V * sizeof(bool*)); //array to hold already added u, v edges
+            for (int l = 0; l < V; l++) {
+                edgedIn[l] = malloc(V * sizeof(bool));
+            }
 
             for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
                 int v;
@@ -45,27 +48,27 @@ int main() {
                     v = rand() % V;                 //select a random v from (0, V-1)
                 } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
 
-                int w = rand() % 20;             //weight of the u, v edge
-                //printf("u = %d, v = %d, w = %d\n", u, v, w);
+                int w = 1 + rand() % 20;             //weight of the u, v edge
                 addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
                 edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
             }
-            //printf("\n");
+
             int addedEdges = V;                     // Already added V edges in step 1
             while (addedEdges < E) {                // add the remaining E - V edges.
                 int u = rand() % V;                 //u is now also selected randomly
-                //printf("u = %d\n", u);
                 int v = rand() % V;
-                //printf("v = %d\n", v);
                 if (u == v || edgedIn[u][v])        //exclude same vertex ends and already added edges
                     continue;
 
-                int w = rand() % V;
+                int w = 1 + rand() % 20;
                 //printf("u = %d, v = %d, w = %d\n", u, v, w);
                 addEdge(graphs[i], u, v, w);
                 edgedIn[u][v] = edgedIn[v][u] = 1;
                 addedEdges++;                       //increment addedEdges for the while condition termination
             }
+
+            for (int m = 0; m < V; m++) free(edgedIn[m]);
+            free(edgedIn);
         }
     }
     else {

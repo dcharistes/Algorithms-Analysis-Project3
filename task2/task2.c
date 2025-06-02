@@ -49,7 +49,11 @@ int unionSet(DisjointSet* ds, int u, int v) {
 }
 
 Graph* kruskalMST(Graph* g) {
-    Edge edges[MAX_NODES * MAX_NODES];
+    Edge* edges = malloc(sizeof(Edge) * MAX_NODES * MAX_NODES / 2);
+    if (!edges) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
     int edgeCount;
 
     extractEdges(g, edges, &edgeCount);                 //we extracted all the edges from the given graph. Also extract the size of the edgeList after it is filled . with u, v, and weight and
@@ -73,7 +77,8 @@ Graph* kruskalMST(Graph* g) {
             totalWeight += w;
         }
     }
-
+    free(edges);
+    freeDisjointSet(&ds);
     printf("Total MST cost: %d\n", totalWeight);
     return mst;
 }
