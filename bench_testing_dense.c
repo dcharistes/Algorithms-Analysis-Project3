@@ -64,7 +64,7 @@ int main() {
         for (int j = 0; j < E; j++) {
             int u = all_edges[j].u;
             int v = all_edges[j].v;
-            int w = 1 + rand() % 20;
+            int w = 1 + rand() % V;
             addEdge(graphs[i], u, v, w);
         }
         free(all_edges);
