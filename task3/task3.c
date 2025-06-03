@@ -50,8 +50,8 @@ int isConnected(Graph* g) {
 Graph* reverseDeleteMST(Graph* g){
     Edge* edges = malloc(sizeof(Edge) * MAX_NODES * MAX_NODES / 2);
     if (!edges) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(EXIT_FAILURE);
+        printf("Memory allocation failed\n");
+        return 0;
     }
     int edgeCount;
 

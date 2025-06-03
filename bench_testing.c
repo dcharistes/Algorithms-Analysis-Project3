@@ -29,6 +29,7 @@ int main() {
     Graph* msts[N];
     int max_edges = V*(V-1)/2;
     int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
+    int weight_th = V;
     float density = (float) E / max_edges;
     printf("V = %d, E = %d\n", V, E);
 
@@ -60,7 +61,7 @@ int main() {
             //                     //    as we approach the minimum number of edges e = v-1. the probability of unconnected graph increases.
 
             for (int u = 1; u < V; u++) {          //select every u in (1, V-1) and 0 through rand%
-                int w = 1 + rand() % 20;            //weight of the u, v edge
+                int w = 1 + rand() % weight_th;            //weight of the u, v edge
                 int v = rand() % u;                 //
                 addEdge(graphs[i], u, v, w);        //add edge u, v and v, u. this makes sure that the graph won't be disconnected by forming a connection only with previous vertices
                 edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgedIn for the two edges added
@@ -72,7 +73,7 @@ int main() {
                 int v = rand() % V;
                 if (u == v || edgedIn[u][v])            //exclude same vertex ends and already added edges
                     continue;
-                int w = 1 + rand() % 20;
+                int w = 1 + rand() % weight_th;
                 addEdge(graphs[i], u, v, w);
                 edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgedIn for the edge (undirected) added
                 addedEdges++;                       //increment addedEdges for the while condition termination

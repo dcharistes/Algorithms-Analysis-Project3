@@ -29,6 +29,7 @@ int main() {
     Graph* msts[N];
     int max_edges = V*(V-1)/2;
     int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
+    int weight_th = V;
 
     typedef struct {
         int u, v;
@@ -67,7 +68,7 @@ int main() {
         for (int j = 0; j < E; j++) {
             int u = all_edges[j].u;
             int v = all_edges[j].v;
-            int w = 1 + rand() % V;
+            int w = 1 + rand() % weight_th;
             addEdge(graphs[i], u, v, w);
         }
         free(all_edges);
