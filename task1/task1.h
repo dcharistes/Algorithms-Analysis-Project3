@@ -1,6 +1,6 @@
 #ifndef TASK1_H
 #define TASK1_H
-#include "../data_structure/task.h"
+#include "../data_structure/data_struct.h"
 
 //prim functions defined task1.c
 int minCost(int cost[], bool known[], int n);

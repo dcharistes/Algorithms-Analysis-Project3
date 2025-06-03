@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "task.h"
+#include "data_struct.h"
 
 void initGraph(Graph* g, int vertices) {
     g->V = vertices;

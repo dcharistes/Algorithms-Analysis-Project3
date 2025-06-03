@@ -1,6 +1,6 @@
 #ifndef TASK2_H
 #define TASK2_H
-#include "../data_structure/task.h"
+#include "../data_structure/data_struct.h"
 
 typedef struct {
     int* parent;            //stores the root of aset containing i. parent[i]

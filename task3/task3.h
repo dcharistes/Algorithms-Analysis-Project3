@@ -1,6 +1,6 @@
 #ifndef TASK3_H
 #define TASK3_h
-#include "../data_structure/task.h"
+#include "../data_structure/data_struct.h"
 
 void removeEdge(Graph* g, int u, int v);
 int isConnected(Graph* g);

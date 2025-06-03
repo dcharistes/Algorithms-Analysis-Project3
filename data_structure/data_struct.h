@@ -1,5 +1,5 @@
-#ifndef TASK_H
-#define TASK_H
+#ifndef DATA_STRUCT_H
+#define DATA_STRUCT_H
 
 #define MAX_NODES 10000
 
