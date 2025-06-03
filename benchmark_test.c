@@ -42,23 +42,6 @@ int main() {
             edgedIn[l] = malloc(V * sizeof(bool));
         }
 
-        // for (int u = 0; u < V; u++) {           //select every u in (0, V-1)
-        //     int v;
-        //     do {
-        //         v = rand() % V;                 //select a random v from (0, V-1)
-        //     } while (v == u || edgedIn[u][v]);  //v != u and not already added in the graph
-
-        //     int w = 1 + rand() % 20;             //weight of the u, v edge
-        //     addEdge(graphs[i], u, v, w);        //add edge u, v and v, u
-        //     edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgeIn for the two edges added
-        // }
-
-        // int addedEdges = V; //lines (46-57)//randomly select a connection with u.
-        //                     //    this might produce an unconnected graph. i.e. 1->5, 2->1, 3->6, 4->6, 5->2 (v = 6, e = v-1=5).
-        //                     //    Prim will return a segmentation fault,
-        //                     //    as it can not operate with unconnected graphs.
-        //                     //    as we approach the minimum number of edges e = v-1. the probability of unconnected graph increases.
-
         for (int u = 1; u < V; u++) {          //select every u in (1, V-1) and 0 through rand%
             int w = 1 + rand() % weight_th;            //weight of the u, v edge
             int v = rand() % u;                 //
