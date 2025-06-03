@@ -62,7 +62,6 @@ int main() {
             for (int u = 1; u < V; u++) {          //select every u in (1, V-1) and 0 through rand%
                 int w = 1 + rand() % 20;            //weight of the u, v edge
                 int v = rand() % u;                 //
-                printf("u = %d, v = %d\n", u, v);
                 addEdge(graphs[i], u, v, w);        //add edge u, v and v, u. this makes sure that the graph won't be disconnected by forming a connection only with previous vertices
                 edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgedIn for the two edges added
             }
