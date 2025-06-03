@@ -37,9 +37,9 @@ int main() {
         graphs[i] = (Graph*) malloc(sizeof(Graph));
         initGraph(graphs[i], V);                //has to be the same for all three algorithms
 
-        bool **edgedIn = malloc(V * sizeof(bool*)); //array to hold already added u, v edges
+        bool **edgedIn = calloc(V, sizeof(bool*)); //array to hold already added u, v edges init to 0 (false) with calloc
         for (int l = 0; l < V; l++) {
-            edgedIn[l] = malloc(V * sizeof(bool));
+            edgedIn[l] = calloc(V, sizeof(bool));
         }
 
         for (int u = 1; u < V; u++) {          //select every u in (1, V-1) and 0 through rand%
