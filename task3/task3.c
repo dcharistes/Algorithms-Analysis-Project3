@@ -53,12 +53,12 @@ Graph* reverseDeleteMST(Graph* g){
         printf("Memory allocation failed\n");
         return 0;
     }
-    int edgeCount;
+    int edge_count;
 
-    extractEdges(g, edges, &edgeCount);
-    qsort(edges, edgeCount, sizeof(Edge), compEdges);
+    extractEdges(g, edges, &edge_count);
+    qsort(edges, edge_count, sizeof(Edge), compEdges);
 
-    for (int i = edgeCount - 1; i >= 0; i--){
+    for (int i = edge_count - 1; i >= 0; i--){
         int u = edges[i].u;
         int v = edges[i].v;
         int w = edges[i].weight;
@@ -74,7 +74,7 @@ Graph* reverseDeleteMST(Graph* g){
     for (int u = 0; u < g->V; u++) {
         Node* curr = g->adjList[u];
         while (curr) {
-            if (u < curr->dest) // Only count each edge once
+            if (u < curr->dest) // counts each edge once. if u > curr-> dest, this edge was counted in the previous loop
                 total_weight += curr->weight;
             curr = curr->next;
         }
