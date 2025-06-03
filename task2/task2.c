@@ -54,10 +54,10 @@ Graph* kruskalMST(Graph* g) {
         printf("Memory allocation failed\n");
         return 0;
     }
-    int edgeCount;
+    int edge_count;
 
-    extractEdges(g, edges, &edgeCount);                 //we extracted all the edges from the given graph. Also extract the size of the edgeList after it is filled . with u, v, and weight and
-    qsort(edges, edgeCount, sizeof(Edge), compEdges);   //sort the edges List in ascending form
+    extractEdges(g, edges, &edge_count);                 //we extracted all the edges from the given graph. Also extract the size of the edgeList after it is filled . with u, v, and weight and
+    qsort(edges, edge_count, sizeof(Edge), compEdges);   //sort the edges List in ascending form
 
     Graph* mst = (Graph*)malloc(sizeof(Graph));         //create the graph that will hold the mst
     initGraph(mst, g->V);                               //initialize the head to NULL
@@ -65,20 +65,20 @@ Graph* kruskalMST(Graph* g) {
     DisjointSet ds;
     initDisjointSet(&ds, g->V);
 
-    int totalWeight = 0;
+    int total_weight = 0;
 
-    for (int i = 0; i < edgeCount; i++) {
+    for (int i = 0; i < edge_count; i++) {
         int u = edges[i].u;
         int v = edges[i].v;
         int w = edges[i].weight;
 
         if (unionSet(&ds, u, v)) {
             addEdge(mst, u, v, w);
-            totalWeight += w;
+            total_weight += w;
         }
     }
     free(edges);
     freeDisjointSet(&ds);
-    printf("Total MST cost: %d\n", totalWeight);
+    printf("Total MST cost: %d\n", total_weight);
     return mst;
 }

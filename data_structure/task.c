@@ -10,33 +10,33 @@ void initGraph(Graph* g, int vertices) {
 }
 
 Node* createNode(int dest, int weight) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->dest = dest;
-    newNode->weight = weight;
-    newNode->next = NULL;
-    return newNode;
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    new_node->dest = dest;
+    new_node->weight = weight;
+    new_node->next = NULL;
+    return new_node;
 }
 
 void addEdge(Graph* g, int u, int v, int weight) {
-    Node* newNode = createNode(v, weight);
-    newNode->next = g->adjList[u];
-    g->adjList[u] = newNode;
+    Node* new_node = createNode(v, weight);
+    new_node->next = g->adjList[u];
+    g->adjList[u] = new_node;
 
-    Node* newNode2 = createNode(u, weight);
-    newNode2->next = g->adjList[v];
-    g->adjList[v] = newNode2;
+    Node* new_node2 = createNode(u, weight);
+    new_node2->next = g->adjList[v];
+    g->adjList[v] = new_node2;
 }
 
-void extractEdges(Graph* g, Edge* edgeList, int* edgeCount) {
-    *edgeCount = 0;
+void extractEdges(Graph* g, Edge* edges, int* edge_count) {
+    *edge_count = 0;
     for (int i = 0; i < g->V; i++) {
         Node* curr = g->adjList[i];
         while (curr) {
             if (i < curr->dest) { // avoid duplicates
-                edgeList[*edgeCount].u = i;
-                edgeList[*edgeCount].v = curr->dest;
-                edgeList[*edgeCount].weight = curr->weight;
-                (*edgeCount)++;
+                edges[*edge_count].u = i;
+                edges[*edge_count].v = curr->dest;
+                edges[*edge_count].weight = curr->weight;
+                (*edge_count)++;
             }
             curr = curr->next;
         }

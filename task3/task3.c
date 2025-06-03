@@ -58,8 +58,6 @@ Graph* reverseDeleteMST(Graph* g){
     extractEdges(g, edges, &edgeCount);
     qsort(edges, edgeCount, sizeof(Edge), compEdges);
 
-    int totalWeight = 0;
-
     for (int i = edgeCount - 1; i >= 0; i--){
         int u = edges[i].u;
         int v = edges[i].v;
@@ -68,13 +66,22 @@ Graph* reverseDeleteMST(Graph* g){
         removeEdge(g, u, v);
 
         if (!isConnected(g)){
-
             addEdge(g, u, v, w);
-            totalWeight += w;
         }
     }
+
+    int total_weight = 0;
+    for (int u = 0; u < g->V; u++) {
+        Node* curr = g->adjList[u];
+        while (curr) {
+            if (u < curr->dest) // Only count each edge once
+                total_weight += curr->weight;
+            curr = curr->next;
+        }
+    }
+
     free(edges);
-    printf("Total MST Weight = %d\n", totalWeight);
+    printf("Total MST Weight = %d\n", total_weight);
 
     return g;
 }
