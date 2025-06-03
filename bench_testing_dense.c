@@ -41,6 +41,9 @@ int main() {
         graphs[i] = (Graph*) malloc(sizeof(Graph));
         initGraph(graphs[i], V);                //has to be the same for all three algorithms
 
+        //this method works fine for dense graphs only.
+        //as it does not ensure connectivity, for sparse graphs the probability of a disconnected graph is high
+        //and prim won't be executed. for sparse graphs the first method is appropriate as it ensures connectivity enabling execution times comparison.
         // generate all possible edges (max_edges)
         EdgePair* all_edges = malloc(max_edges * sizeof(EdgePair));
         int idx = 0;
