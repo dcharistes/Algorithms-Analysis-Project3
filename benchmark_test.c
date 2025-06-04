@@ -27,11 +27,12 @@ int main() {
 
     Graph* graphs[N];
     Graph* msts[N];
-    int max_edges = V*(V-1)/2;
-    int E = V - 1 + rand() % (max_edges - V); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
+    int E[N];
+    int max_edges = V * (V - 1) / 2;
     int weight_th = V;
-    float density = (float) E / max_edges;
-    printf("V = %d, E = %d\n", V, E);
+    float density_fix = 0;
+    float density[N];
+    //int E = V - 1 + rand() % (max_edges - V + 2); //number of edges between min edges (so that a vertex is not disconnected forom the graph) and max possible. [minE, maxE]
 
     for (int i = 0; i < N; i++){
         graphs[i] = (Graph*) malloc(sizeof(Graph));
@@ -50,7 +51,19 @@ int main() {
         }
 
         int addedEdges = V - 1;                     // Already added V - 1 edges in step 1
-        while (addedEdges < E) {                    // add the remaining E - (V - 1) edges.
+        
+        density_fix = (i < 2) ? 0.04 : 1;           //sparse or dense graph
+        E[i] = V - 1 + rand() % ((int)(density_fix * max_edges - (V - 1) + 1));                     
+        density[i] = (float)E[i] /(float) max_edges; //actual density
+
+        if (i > 0) {
+            while (density[i] <= density [i - 1] && density[i - 1] < 1){
+                E[i] = V - 1 + rand() % ((int)(density_fix * max_edges - (V - 1) + 1));                     
+                density[i] = (float) E[i] / max_edges;
+            }
+        }
+
+        while (addedEdges < E[i]) {                    // add the remaining E - (V - 1) edges.
             int u = rand() % V;                     //u and v is now also selected randomly as we guaranteed in the previous step the connectivity
             int v = rand() % V;
             if (u == v || edgedIn[u][v])            //exclude same vertex ends and already added edges
@@ -103,13 +116,11 @@ int main() {
     fclose(log_kruskal);
     fclose(log_re_del);
 
-    printf("V = %d, E = %d\n", V, E);
+    printf("V = %d,\n", V);
 
-    if (density >= 0.04)
-        printf("Dense Graph\n");
-    else
-        printf("Sparse Graph\n");
-    printf("density = %.6f\n", density);
+    for (int i = 0; i < N; i++){
+        printf("density[%d] = %.6f, E[%d] = %d\n", i, density[i], i, E[i]);
+    }
 }
 
 float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const char* label, int j){

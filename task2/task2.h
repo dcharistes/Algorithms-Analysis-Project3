@@ -3,7 +3,7 @@
 #include "../data_structure/data_struct.h"
 
 typedef struct {
-    int* parent;            //stores the root of aset containing i. parent[i]
+    int* parent;            //stores the root of a set containing i. parent[i]
     int* rank;              //rank[i] stores the depth of the tree  with root i. node i is the parent representing the set of child nodes
     int size;               //size in the n of elements in the ds
 } DisjointSet;
