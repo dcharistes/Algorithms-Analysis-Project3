@@ -43,9 +43,9 @@ int main() {
         }
 
         for (int u = 1; u < V; u++) {          //select every u in (1, V-1) and 0 through rand%
-            int w = 1 + rand() % weight_th;            //weight of the u, v edge
+            int w = 1 + rand() % weight_th;     //this makes sure that the graph won't be disconnected by forming a connection only with previous vertices
             int v = rand() % u;                 //
-            addEdge(graphs[i], u, v, w);        //add edge u, v and v, u. this makes sure that the graph won't be disconnected by forming a connection only with previous vertices
+            addEdge(graphs[i], u, v, w);        //add edge u, v and v, u. 
             edgedIn[u][v] = edgedIn[v][u] = 1;  //update edgedIn for the two edges added
         }
 
