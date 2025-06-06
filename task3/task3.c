@@ -25,7 +25,7 @@ void removeEdge(Graph* g, int u, int v) {
     }
 }
 
-// DFS traversal
+// DFS traversal O(V+E)
 void dfs(Graph* g, int v, int* visited) {
     visited[v] = 1;
     Node* curr = g->adjList[v];
@@ -37,7 +37,7 @@ void dfs(Graph* g, int v, int* visited) {
     }
 }
 
-// Check connectivity
+// Check connectivity O(V+E) + O(V)
 int isConnected(Graph* g) {
     int visited[MAX_NODES] = {0};
     dfs(g, 0, visited);
@@ -55,15 +55,15 @@ Graph* reverseDeleteMST(Graph* g){
     }
     int edge_count;
 
-    extractEdges(g, edges, &edge_count);
-    qsort(edges, edge_count, sizeof(Edge), compEdges);
+    extractEdges(g, edges, &edge_count); //O(V+E)
+    qsort(edges, edge_count, sizeof(Edge), compEdges); //O(ElogE)
 
     for (int i = edge_count - 1; i >= 0; i--){
         int u = edges[i].u;
         int v = edges[i].v;
         int w = edges[i].weight;
 
-        removeEdge(g, u, v);
+        removeEdge(g, u, v); //O(deg(u)+dega(v)) deg(n) number of n neighbors'
 
         if (!isConnected(g)){
             addEdge(g, u, v, w);
