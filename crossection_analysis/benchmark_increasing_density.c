@@ -3,9 +3,9 @@
 #include <stdbool.h>
 #include <time.h>
 #include <math.h>
-#include "./task1/task1.h"
-#include "./task2/task2.h"
-#include "./task3/task3.h"
+#include "../task1/task1.h"
+#include "../task2/task2.h"
+#include "../task3/task3.h"
 
 #define V 1000
 #define N 200
@@ -15,9 +15,9 @@ float time_function(Graph* (*func)(Graph*), Graph* graph, Graph** mst, const cha
 int main() {
     srand(time(NULL));
 
-    FILE* log_prim = fopen("./logs/log_prim.csv", "w");
-    FILE* log_kruskal = fopen("./logs/log_kruskal.csv", "w");
-    FILE* log_re_del = fopen("./logs/log_re_del.csv", "w");
+    FILE* log_prim = fopen("./crossection_analysis/logs_for_crossection/log_prim.csv", "w");
+    FILE* log_kruskal = fopen("./crossection_analysis/logs_for_crossection/log_kruskal.csv", "w");
+    FILE* log_re_del = fopen("./crossection_analysis/logs_for_crossection/log_re_del.csv", "w");
 
     const char* label[3] = {"Prim", "Kruskal", "Reverse-Delete"};
 
