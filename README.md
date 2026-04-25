@@ -1,6 +1,6 @@
 # Algorithms-Analysis-Project3
 
-## 📚 Overview
+## Overview
 
 This repository presents a computational analysis of three prominent algorithms for finding the Minimum Spanning Tree (MST) in a graph:
 
@@ -10,7 +10,7 @@ This repository presents a computational analysis of three prominent algorithms 
 
 Each algorithm is implemented using an adjacency list representation of graphs. The core data structures—`Graph`, `Node`, and `Edge`—are defined once and reused across all algorithm implementations, ensuring modularity and consistency in benchmarking.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 .
@@ -26,7 +26,7 @@ Each algorithm is implemented using an adjacency list representation of graphs. 
 └── README.md                # Project documentation
 ```
 
-## ⚙️ Setup & Usage
+## Setup & Usage
 
 ### Prerequisites
 
@@ -55,11 +55,11 @@ This script will:
 2. Run the benchmarking tests for all three algorithms.
 3. Store the output logs in the `logs/` directory for further analysis.
 
-## 📊 Performance Analysis
+## Performance Analysis
 
 The `crossection_analysis/` directory contains scripts and tools to analyze the performance of the implemented algorithms. These analyses help in understanding the time and space complexities, as well as the practical efficiency of each algorithm under different scenarios.
 
-## 🧱 Core Data Structures
+## Core Data Structures
 
 Located in the `data_structure/` directory, the core components include:
 
@@ -69,7 +69,7 @@ Located in the `data_structure/` directory, the core components include:
 
 These structures are designed for reusability and are utilized across all algorithm implementations.
 
-## 📌 Tasks Breakdown
+## Tasks Breakdown
 
 * **Task 1 (`task1/`)**: Implementation of Prim's Algorithm.
 * **Task 2 (`task2/`)**: Implementation of Kruskal's Algorithm.
